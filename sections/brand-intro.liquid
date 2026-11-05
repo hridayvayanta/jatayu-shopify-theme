@@ -6,14 +6,22 @@
 <section class="brand-intro-section" id="BrandIntroSection" aria-label="Brand Introduction">
   <div class="page-width">
     <div class="brand-intro-inner">
-      <span class="label-eyebrow">{{ section.settings.eyebrow | default: 'The Awakening' }}</span>
-      <h2 class="brand-intro-title">{{ section.settings.heading | default: 'Wear Your Legacy.' }}</h2>
-      <p class="brand-intro-sub">{{ section.settings.subheading | default: 'Rooted in heritage. Made for today.' }}</p>
-      <div>
-        <a href="{{ section.settings.cta_link | default: '/collections/all' }}" class="btn btn-primary">
-          {{ section.settings.cta_text | default: 'EXPLORE THE COLLECTION' }}
-        </a>
-      </div>
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="label-eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="brand-intro-title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="brand-intro-sub">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      {%- if section.settings.cta_text != blank -%}
+        <div>
+          <a href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}" class="btn btn-primary">
+            {{ section.settings.cta_text }}
+          </a>
+        </div>
+      {%- endif -%}
     </div>
   </div>
 </section>
@@ -49,8 +57,7 @@
     {
       "type": "url",
       "id": "cta_link",
-      "label": "Button Link",
-      "default": "/collections/all"
+      "label": "Button Link"
     }
   ],
   "presets": [

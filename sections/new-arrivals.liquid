@@ -1,101 +1,47 @@
 {%- comment -%}
   SECTION 7 — New Arrivals
-  Showcases latest drops from configurable collection
+  Renders real Shopify products from the selected collection.
+  No fake sample products.
 {%- endcomment -%}
 
-<section class="new-arrivals-section" id="NewArrivalsSection" aria-label="New Arrivals">
+{%- assign collection = section.settings.collection -%}
+
+<section class="new-arrivals-section" id="NewArrivals-{{ section.id }}" aria-label="New Arrivals">
   <div class="page-width">
     <div class="section-header-row">
       <div class="section-title-wrap">
-        <span class="label-eyebrow">{{ section.settings.eyebrow | default: 'RECENT RELEASES' }}</span>
-        <h2>{{ section.settings.heading | default: 'New Arrivals' }}</h2>
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="label-eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        <h2 class="section-title">{{ section.settings.heading | default: 'New Arrivals' }}</h2>
       </div>
-      <div>
-        <a href="{{ section.settings.collection.url | default: '/collections/all' }}" class="btn-text-arrow">
-          <span>View All Drops</span>
-          {% render 'icon-arrow' %}
-        </a>
-      </div>
-    </div>
-
-    <div class="product-grid">
-      {%- if section.settings.collection != blank and section.settings.collection.products_count > 0 -%}
-        {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
-          {% render 'product-card', product: product %}
-        {%- endfor -%}
-      {%- else -%}
-        <!-- Default New Drops Showcase -->
-        <article class="product-card">
-          <div class="product-card-media">
-            <a href="/products/courage-embroidered-pullover-hoodie">
-              <img src="{{ 'product-hoodie-charcoal-front.jpg' | asset_url }}" alt="Courage Embroidered Pullover Hoodie" class="product-card-img product-card-img-primary" width="400" height="500">
-              <img src="{{ 'product-hoodie-charcoal-back.jpg' | asset_url }}" alt="Courage Embroidered Pullover Hoodie Back" class="product-card-img product-card-img-secondary" width="400" height="500">
-            </a>
-            <span class="product-badge">New Arrival</span>
-            <button type="button" class="quick-add-btn" data-variant-id="201" aria-label="Quick Add">
-              {% render 'icon-bag' %}
-              <span>Quick Add</span>
-            </button>
-          </div>
-          <div class="product-card-info">
-            <h3 class="product-card-title"><a href="/products/courage-embroidered-pullover-hoodie">Courage Embroidered Pullover Hoodie</a></h3>
-            <div class="product-card-price">₹4,499</div>
-          </div>
-        </article>
-
-        <article class="product-card">
-          <div class="product-card-media">
-            <a href="/products/vayu-minimalist-classic-crew">
-              <img src="{{ 'product-tee-sand-front.jpg' | asset_url }}" alt="Vayu Minimalist Classic Crew - Sand Beige" class="product-card-img product-card-img-primary" width="400" height="500">
-              <img src="{{ 'product-tee-sand-back.jpg' | asset_url }}" alt="Vayu Minimalist Classic Crew Back" class="product-card-img product-card-img-secondary" width="400" height="500">
-            </a>
-            <span class="product-badge">Essential</span>
-            <button type="button" class="quick-add-btn" data-variant-id="202" aria-label="Quick Add">
-              {% render 'icon-bag' %}
-              <span>Quick Add</span>
-            </button>
-          </div>
-          <div class="product-card-info">
-            <h3 class="product-card-title"><a href="/products/vayu-minimalist-classic-crew">Vayu Minimalist Classic Crew</a></h3>
-            <div class="product-card-price">₹1,999</div>
-          </div>
-        </article>
-
-        <article class="product-card">
-          <div class="product-card-media">
-            <a href="/products/the-jatayu-sovereign-oversized-tee-ivory">
-              <img src="{{ 'product-tee-ivory-front.jpg' | asset_url }}" alt="The Jatayu Sovereign Oversized Tee - Peach Ivory" class="product-card-img product-card-img-primary" width="400" height="500">
-              <img src="{{ 'product-tee-ivory-back.jpg' | asset_url }}" alt="The Jatayu Sovereign Oversized Tee Back View" class="product-card-img product-card-img-secondary" width="400" height="500">
-            </a>
-            <button type="button" class="quick-add-btn" data-variant-id="203" aria-label="Quick Add">
-              {% render 'icon-bag' %}
-              <span>Quick Add</span>
-            </button>
-          </div>
-          <div class="product-card-info">
-            <h3 class="product-card-title"><a href="/products/the-jatayu-sovereign-oversized-tee-ivory">The Jatayu Sovereign Oversized Tee</a></h3>
-            <div class="product-card-price">₹2,499</div>
-          </div>
-        </article>
-
-        <article class="product-card">
-          <div class="product-card-media">
-            <a href="/products/sacred-flight-heavyweight-hoodie-maroon">
-              <img src="{{ 'product-hoodie-maroon-front.jpg' | asset_url }}" alt="Sacred Flight Heavyweight Hoodie" class="product-card-img product-card-img-primary" width="400" height="500">
-              <img src="{{ 'product-hoodie-maroon-back.jpg' | asset_url }}" alt="Sacred Flight Heavyweight Hoodie Back" class="product-card-img product-card-img-secondary" width="400" height="500">
-            </a>
-            <button type="button" class="quick-add-btn" data-variant-id="204" aria-label="Quick Add">
-              {% render 'icon-bag' %}
-              <span>Quick Add</span>
-            </button>
-          </div>
-          <div class="product-card-info">
-            <h3 class="product-card-title"><a href="/products/sacred-flight-heavyweight-hoodie-maroon">Sacred Flight Heavyweight Hoodie</a></h3>
-            <div class="product-card-price">₹4,299</div>
-          </div>
-        </article>
+      {%- if collection != blank and collection.all_products_count > 0 -%}
+        <div>
+          <a href="{{ collection.url }}" class="view-all-link">
+            <span>View All</span>
+            {% render 'icon-arrow' %}
+          </a>
+        </div>
       {%- endif -%}
     </div>
+
+    {%- if collection != blank and collection.products_count > 0 -%}
+      <div class="product-grid">
+        {%- for product in collection.products limit: section.settings.products_to_show -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      </div>
+    {%- elsif request.design_mode -%}
+      <!-- Theme Editor Setup Guide (Only visible to merchant inside theme editor) -->
+      <div style="text-align: center; padding: 48px 20px; background: rgba(116, 1, 1, 0.04); border: 1px dashed var(--color-border-subtle); border-radius: 6px;">
+        <h3 style="font-family: var(--font-editorial); font-size: 20px; color: var(--color-maroon-primary); margin-bottom: 8px;">
+          New Arrivals Collection
+        </h3>
+        <p style="font-size: 13px; color: var(--color-text-body); max-width: 480px; margin: 0 auto;">
+          Select your new arrivals collection in the settings panel to display newly released products.
+        </p>
+      </div>
+    {%- endif -%}
   </div>
 </section>
 
@@ -123,11 +69,11 @@
     {
       "type": "range",
       "id": "products_to_show",
-      "min": 4,
-      "max": 8,
+      "min": 2,
+      "max": 12,
       "step": 2,
       "default": 4,
-      "label": "Maximum products to show"
+      "label": "Products to show"
     }
   ],
   "presets": [

@@ -1,10 +1,24 @@
+{%- comment -%}
+  Site Header
+  Connected to Shopify's real navigation menu and live cart count.
+  No fake links or hardcoded badge numbers.
+{%- endcomment -%}
+
 <header class="site-header" id="SiteHeader">
   <div class="header-container">
-    <!-- Desktop Left Navigation -->
+    <!-- Desktop Left Navigation (Powered by Shopify Navigation) -->
     <nav class="header-nav-left" role="navigation" aria-label="Main Navigation">
-      <a href="{{ section.settings.link_shop | default: '/collections/all' }}" class="nav-link">Shop</a>
-      <a href="{{ section.settings.link_collections | default: '/collections' }}" class="nav-link">Collections</a>
-      <a href="{{ section.settings.link_story | default: '/pages/our-story' }}" class="nav-link">Our Story</a>
+      {%- assign main_nav = section.settings.menu | default: linklists.main-menu -%}
+      {%- if main_nav != blank and main_nav.links.size > 0 -%}
+        {%- for link in main_nav.links -%}
+          <a href="{{ link.url }}" class="nav-link {% if link.active %}active{% endif %}">
+            {{ link.title }}
+          </a>
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.all_products_collection_url }}" class="nav-link">Shop</a>
+        <a href="{{ routes.collections_url }}" class="nav-link">Collections</a>
+      {%- endif -%}
     </nav>
 
     <!-- Mobile Menu Trigger -->
@@ -14,23 +28,23 @@
 
     <!-- Center Logo (Official Approved JATAYU Logo) -->
     <div class="header-logo-center">
-      <a href="/" class="header-logo-link" aria-label="JATAYU Home">
+      <a href="{{ routes.root_url }}" class="header-logo-link" aria-label="{{ shop.name }}">
         {%- if section.settings.logo != blank -%}
           <img
             src="{{ section.settings.logo | image_url: width: 300 }}"
             alt="{{ shop.name }}"
             class="header-logo-img"
-            width="150"
-            height="52"
+            width="{{ section.settings.logo_width | default: 140 }}"
+            height="46"
           >
         {%- else -%}
           <img
             src="{{ 'jatayu-logo-transparent.png' | asset_url }}"
             onerror="this.onerror=null; this.src='{{ 'jatayu-logo.jpg' | asset_url }}';"
-            alt="JATAYU"
+            alt="{{ shop.name }}"
             class="header-logo-img"
-            width="150"
-            height="52"
+            width="140"
+            height="46"
           >
         {%- endif -%}
       </a>
@@ -38,12 +52,12 @@
 
     <!-- Right Actions: Search, Account, Shopping Bag -->
     <div class="header-actions-right">
-      <a href="/search" class="header-action-btn" aria-label="Search Store" id="SearchTrigger">
+      <a href="{{ routes.search_url }}" class="header-action-btn" aria-label="Search Store">
         {% render 'icon-search' %}
       </a>
 
       {%- if shop.customer_accounts_enabled -%}
-        <a href="{% if customer %}/account{% else %}/account/login{% endif %}" class="header-action-btn" aria-label="Customer Account">
+        <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="header-action-btn" aria-label="Account">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
@@ -51,7 +65,7 @@
         </a>
       {%- endif -%}
 
-      <a href="/cart" class="header-action-btn" aria-label="Shopping Bag" data-cart-open>
+      <a href="{{ routes.cart_url }}" class="header-action-btn" aria-label="Shopping Bag" data-cart-open>
         {% render 'icon-bag' %}
         <span class="header-cart-count" style="display: {% if cart.item_count > 0 %}flex{% else %}none{% endif %};">
           {{ cart.item_count }}
@@ -71,20 +85,21 @@
       "label": "Custom Logo Image"
     },
     {
-      "type": "url",
-      "id": "link_shop",
-      "label": "Shop link",
-      "default": "/collections/all"
+      "type": "range",
+      "id": "logo_width",
+      "min": 100,
+      "max": 240,
+      "step": 10,
+      "default": 140,
+      "unit": "px",
+      "label": "Logo Width"
     },
     {
-      "type": "url",
-      "id": "link_collections",
-      "label": "Collections link"
-    },
-    {
-      "type": "url",
-      "id": "link_story",
-      "label": "Our Story link"
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu",
+      "info": "Configured in Shopify Admin > Navigation"
     }
   ]
 }

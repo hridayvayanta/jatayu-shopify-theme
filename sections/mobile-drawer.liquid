@@ -1,13 +1,15 @@
 {%- comment -%}
   Mobile Navigation Drawer
+  Connected to Shopify's real navigation menu.
+  No fake links or dead page paths.
 {%- endcomment -%}
 
 <div class="cart-drawer-overlay" id="mobile-nav-overlay" aria-hidden="true"></div>
 
 <nav class="mobile-nav-drawer" id="mobile-nav-drawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
   <div style="display: flex; justify-content: space-between; align-items: center;">
-    <a href="/" aria-label="JATAYU Home">
-      <img src="{{ 'jatayu-logo-transparent.png' | asset_url }}" onerror="this.onerror=null; this.src='{{ 'jatayu-logo.jpg' | asset_url }}';" alt="JATAYU" style="height: 38px; width: auto;">
+    <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+      <img src="{{ 'jatayu-logo-transparent.png' | asset_url }}" onerror="this.onerror=null; this.src='{{ 'jatayu-logo.jpg' | asset_url }}';" alt="{{ shop.name }}" style="height: 38px; width: auto;">
     </a>
     <button type="button" id="mobile-nav-close" aria-label="Close Menu" style="padding: 8px; color: var(--color-maroon-primary);">
       {% render 'icon-close' %}
@@ -15,16 +17,19 @@
   </div>
 
   <div class="mobile-nav-links">
-    <a href="/collections/all" class="mobile-nav-link">Shop All</a>
-    <a href="/collections/t-shirts" class="mobile-nav-link">T-Shirts</a>
-    <a href="/collections/hoodies" class="mobile-nav-link">Hoodies</a>
-    <a href="/pages/our-story" class="mobile-nav-link">Our Story</a>
-    <a href="/pages/size-guide" class="mobile-nav-link" style="font-size: 20px; color: var(--color-text-body);">Size Guide</a>
-    <a href="/pages/contact" class="mobile-nav-link" style="font-size: 20px; color: var(--color-text-body);">Contact</a>
+    {%- assign mobile_nav = section.settings.menu | default: linklists.main-menu -%}
+    {%- if mobile_nav != blank and mobile_nav.links.size > 0 -%}
+      {%- for link in mobile_nav.links -%}
+        <a href="{{ link.url }}" class="mobile-nav-link">{{ link.title }}</a>
+      {%- endfor -%}
+    {%- else -%}
+      <a href="{{ routes.all_products_collection_url }}" class="mobile-nav-link">Shop All</a>
+      <a href="{{ routes.collections_url }}" class="mobile-nav-link">Collections</a>
+    {%- endif -%}
   </div>
 
   <div style="margin-top: auto; border-top: 1px solid var(--color-border-subtle); padding-top: 24px;">
-    <span class="label-eyebrow" style="margin-bottom: 6px;">JATAYU APPAREL</span>
+    <span class="label-eyebrow" style="margin-bottom: 6px;">{{ shop.name }}</span>
     <p style="font-size: 12px; color: rgba(33, 27, 25, 0.7);">Rooted in heritage. Made for today.</p>
   </div>
 </nav>
@@ -32,6 +37,13 @@
 {% schema %}
 {
   "name": "Mobile Drawer",
-  "settings": []
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ]
 }
 {% endschema %}

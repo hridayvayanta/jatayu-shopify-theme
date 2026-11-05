@@ -1,118 +1,47 @@
 {%- comment -%}
   SECTION 3 — Featured Collection
-  "The First Chapter." — THE JATAYU COLLECTION
+  Renders real Shopify products from the selected collection.
+  No fake sample products.
 {%- endcomment -%}
 
-<section class="featured-collection-section" id="FeaturedCollection" aria-label="Featured Collection">
+{%- assign collection = section.settings.collection -%}
+
+<section class="featured-collection-section" id="FeaturedCollection-{{ section.id }}" aria-label="Featured Collection">
   <div class="page-width">
     <div class="section-header-row">
       <div class="section-title-wrap">
-        <span class="label-eyebrow">{{ section.settings.eyebrow | default: 'THE JATAYU COLLECTION' }}</span>
-        <h2>{{ section.settings.heading | default: 'The First Chapter.' }}</h2>
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="label-eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        <h2 class="section-title">{{ section.settings.heading | default: collection.title | default: 'Featured Collection' }}</h2>
       </div>
-      <div>
-        <a href="{{ section.settings.collection.url | default: '/collections/all' }}" class="btn-text-arrow">
-          <span>View All Pieces</span>
-          {% render 'icon-arrow' %}
-        </a>
-      </div>
-    </div>
-
-    <div class="product-grid">
-      {%- if section.settings.collection != blank and section.settings.collection.products_count > 0 -%}
-        {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
-          {% render 'product-card', product: product %}
-        {%- endfor -%}
-      {%- else -%}
-        {%- comment -%} High-fashion default catalog items {%- endcomment -%}
-        <article class="product-card">
-          <div class="product-card-media">
-            <a href="/products/jatayu-sovereign-oversized-tee-charcoal">
-              <img src="{{ 'product-tee-charcoal-front.jpg' | asset_url }}" alt="Jatayu Sovereign Oversized Tee - Vintage Charcoal" class="product-card-img product-card-img-primary" width="400" height="500">
-              <img src="{{ 'product-tee-charcoal-back.jpg' | asset_url }}" alt="Jatayu Sovereign Oversized Tee Back View" class="product-card-img product-card-img-secondary" width="400" height="500">
-            </a>
-            <span class="product-badge">New Chapter</span>
-            <button type="button" class="quick-add-btn" data-variant-id="101" aria-label="Quick Add">
-              {% render 'icon-bag' %}
-              <span>Quick Add</span>
-            </button>
-          </div>
-          <div class="product-card-info">
-            <h3 class="product-card-title"><a href="/products/jatayu-sovereign-oversized-tee-charcoal">The Jatayu Sovereign Oversized Tee</a></h3>
-            <div class="product-card-price">₹2,499</div>
-            <div class="product-card-swatches">
-              <span class="swatch-dot" style="background-color: #211B19;" title="Vintage Charcoal"></span>
-              <span class="swatch-dot" style="background-color: #F7DBBD;" title="Peach Ivory"></span>
-              <span class="swatch-dot" style="background-color: #740101;" title="Heritage Maroon"></span>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-card">
-          <div class="product-card-media">
-            <a href="/products/jatayu-sovereign-oversized-tee-ivory">
-              <img src="{{ 'product-tee-ivory-front.jpg' | asset_url }}" alt="The Jatayu Sovereign Oversized Tee - Peach Ivory" class="product-card-img product-card-img-primary" width="400" height="500">
-              <img src="{{ 'product-tee-ivory-back.jpg' | asset_url }}" alt="The Jatayu Sovereign Oversized Tee Back View" class="product-card-img product-card-img-secondary" width="400" height="500">
-            </a>
-            <button type="button" class="quick-add-btn" data-variant-id="102" aria-label="Quick Add">
-              {% render 'icon-bag' %}
-              <span>Quick Add</span>
-            </button>
-          </div>
-          <div class="product-card-info">
-            <h3 class="product-card-title"><a href="/products/jatayu-sovereign-oversized-tee-ivory">The Jatayu Sovereign Oversized Tee</a></h3>
-            <div class="product-card-price">₹2,499</div>
-            <div class="product-card-swatches">
-              <span class="swatch-dot" style="background-color: #F7DBBD;" title="Peach Ivory"></span>
-              <span class="swatch-dot" style="background-color: #211B19;" title="Vintage Charcoal"></span>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-card">
-          <div class="product-card-media">
-            <a href="/products/sacred-flight-heavyweight-hoodie-maroon">
-              <img src="{{ 'product-hoodie-maroon-front.jpg' | asset_url }}" alt="Sacred Flight Heavyweight Hoodie - Deep Maroon" class="product-card-img product-card-img-primary" width="400" height="500">
-              <img src="{{ 'product-hoodie-maroon-back.jpg' | asset_url }}" alt="Sacred Flight Heavyweight Hoodie Back View" class="product-card-img product-card-img-secondary" width="400" height="500">
-            </a>
-            <span class="product-badge">Signature</span>
-            <button type="button" class="quick-add-btn" data-variant-id="103" aria-label="Quick Add">
-              {% render 'icon-bag' %}
-              <span>Quick Add</span>
-            </button>
-          </div>
-          <div class="product-card-info">
-            <h3 class="product-card-title"><a href="/products/sacred-flight-heavyweight-hoodie-maroon">Sacred Flight Heavyweight Hoodie</a></h3>
-            <div class="product-card-price">₹4,299</div>
-            <div class="product-card-swatches">
-              <span class="swatch-dot" style="background-color: #740101;" title="Deep Maroon"></span>
-              <span class="swatch-dot" style="background-color: #211B19;" title="Vintage Charcoal"></span>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-card">
-          <div class="product-card-media">
-            <a href="/products/garuda-crest-heavyweight-tee">
-              <img src="{{ 'product-tee-maroon-front.jpg' | asset_url }}" alt="Garuda Crest Heavyweight Tee - Heritage Maroon" class="product-card-img product-card-img-primary" width="400" height="500">
-              <img src="{{ 'product-tee-maroon-back.jpg' | asset_url }}" alt="Garuda Crest Heavyweight Tee Back View" class="product-card-img product-card-img-secondary" width="400" height="500">
-            </a>
-            <button type="button" class="quick-add-btn" data-variant-id="104" aria-label="Quick Add">
-              {% render 'icon-bag' %}
-              <span>Quick Add</span>
-            </button>
-          </div>
-          <div class="product-card-info">
-            <h3 class="product-card-title"><a href="/products/garuda-crest-heavyweight-tee">Garuda Crest Heavyweight Tee</a></h3>
-            <div class="product-card-price">₹2,299</div>
-            <div class="product-card-swatches">
-              <span class="swatch-dot" style="background-color: #740101;" title="Heritage Maroon"></span>
-              <span class="swatch-dot" style="background-color: #E9C39E;" title="Sand Beige"></span>
-            </div>
-          </div>
-        </article>
+      {%- if collection != blank and collection.all_products_count > 0 -%}
+        <div>
+          <a href="{{ collection.url }}" class="view-all-link">
+            <span>View All</span>
+            {% render 'icon-arrow' %}
+          </a>
+        </div>
       {%- endif -%}
     </div>
+
+    {%- if collection != blank and collection.products_count > 0 -%}
+      <div class="product-grid">
+        {%- for product in collection.products limit: section.settings.products_to_show -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      </div>
+    {%- elsif request.design_mode -%}
+      <!-- Theme Editor Setup Guide (Only visible to merchant inside theme editor) -->
+      <div style="text-align: center; padding: 48px 20px; background: rgba(116, 1, 1, 0.04); border: 1px dashed var(--color-border-subtle); border-radius: 6px;">
+        <h3 style="font-family: var(--font-editorial); font-size: 20px; color: var(--color-maroon-primary); margin-bottom: 8px;">
+          No Collection Selected
+        </h3>
+        <p style="font-size: 13px; color: var(--color-text-body); max-width: 480px; margin: 0 auto;">
+          Select a collection in the settings panel on the right/left to display your store's live products here.
+        </p>
+      </div>
+    {%- endif -%}
   </div>
 </section>
 
@@ -140,11 +69,11 @@
     {
       "type": "range",
       "id": "products_to_show",
-      "min": 4,
-      "max": 12,
+      "min": 2,
+      "max": 16,
       "step": 2,
       "default": 4,
-      "label": "Maximum products to show"
+      "label": "Products to show"
     }
   ],
   "presets": [

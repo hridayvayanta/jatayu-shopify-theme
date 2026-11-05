@@ -15,7 +15,7 @@
         "heading": "Wear Your Legacy.",
         "subheading": "Rooted in heritage. Made for today.",
         "cta_text": "EXPLORE THE COLLECTION",
-        "cta_link": "/collections/all"
+        "cta_link": ""
       }
     },
     "featured_collection": {
@@ -30,11 +30,7 @@
       "type": "category-showcase",
       "settings": {
         "eyebrow": "CRAFTED SILHOUETTES",
-        "heading": "Shop by Category",
-        "cat1_title": "T-Shirts",
-        "cat1_link": "/collections/t-shirts",
-        "cat2_title": "Hoodies",
-        "cat2_link": "/collections/hoodies"
+        "heading": "Shop by Category"
       }
     },
     "statement": {
@@ -52,7 +48,7 @@
         "text_paragraph_1": "Inspired by Jatayu's courage and sacrifice in the Ramayana, JATAYU brings the spirit of Indian heritage into contemporary fashion.",
         "text_paragraph_2": "An expression of identity, courage, and a legacy worth carrying forward.",
         "cta_text": "DISCOVER OUR STORY",
-        "cta_link": "/pages/our-story"
+        "cta_link": ""
       }
     },
     "new_arrivals": {

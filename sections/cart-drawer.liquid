@@ -18,7 +18,7 @@
     {%- if cart.item_count == 0 -%}
       <div class="cart-empty-message">
         <p>Your shopping bag is empty.</p>
-        <a href="/collections/all" class="btn btn-secondary" style="margin-top: 12px;" data-cart-close>Explore Collection</a>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn-secondary" style="margin-top: 12px;" data-cart-close>Explore Collection</a>
       </div>
     {%- else -%}
       {%- for item in cart.items -%}

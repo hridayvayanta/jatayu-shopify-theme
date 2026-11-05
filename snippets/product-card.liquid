@@ -22,14 +22,9 @@
           height="500"
         >
       {%- else -%}
-        <img
-          src="{{ 'product-tee-charcoal-front.jpg' | asset_url }}"
-          alt="{{ product.title | escape }}"
-          class="product-card-img product-card-img-primary"
-          loading="lazy"
-          width="400"
-          height="500"
-        >
+        <div class="product-card-img placeholder-svg-wrap" style="background: var(--color-beige-sand); display: flex; align-items: center; justify-content: center; height: 100%;">
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
       {%- endif -%}
 
       {%- if secondary_media != blank -%}
@@ -49,14 +44,14 @@
     {%- elsif product.tags contains 'new' or product.tags contains 'New' -%}
       <span class="product-badge">New Chapter</span>
     {%- elsif product.compare_at_price > product.price -%}
-      <span class="product-badge">Archival</span>
+      <span class="product-badge">Sale</span>
     {%- endif -%}
 
-    {%- if product.available -%}
+    {%- if product.available and current_variant != blank -%}
       <button
         type="button"
         class="quick-add-btn"
-        data-variant-id="{{ current_variant.id | default: '1' }}"
+        data-variant-id="{{ current_variant.id }}"
         aria-label="Quick Add {{ product.title | escape }}"
       >
         {% render 'icon-bag' %}

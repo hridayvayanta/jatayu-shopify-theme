@@ -26,20 +26,15 @@
               height="875"
             >
           {%- else -%}
-            <img
-              src="{{ 'product-tee-charcoal-front.jpg' | asset_url }}"
-              alt="{{ product.title | default: 'The Jatayu Sovereign Oversized Tee' }}"
-              class="pdp-main-image"
-              id="PdpMainImage"
-              width="700"
-              height="875"
-            >
+            <div class="pdp-main-image placeholder-image" style="background: var(--color-beige-sand); display: flex; align-items: center; justify-content: center; min-height: 500px;">
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
           {%- endif -%}
         </div>
 
         <!-- Gallery Thumbnails -->
-        <div class="pdp-thumbnails">
-          {%- if product.media.size > 1 -%}
+        {%- if product.media.size > 1 -%}
+          <div class="pdp-thumbnails">
             {%- for media in product.media -%}
               <img
                 src="{{ media | image_url: width: 240 }}"
@@ -50,65 +45,59 @@
                 height="100"
               >
             {%- endfor -%}
-          {%- else -%}
-            <!-- Fallback Thumbnails for catalog/preview -->
-            <img src="{{ 'product-tee-charcoal-front.jpg' | asset_url }}" data-full-src="{{ 'product-tee-charcoal-front.jpg' | asset_url }}" alt="Front View" class="pdp-thumb is-active" width="80" height="100">
-            <img src="{{ 'product-tee-charcoal-back.jpg' | asset_url }}" data-full-src="{{ 'product-tee-charcoal-back.jpg' | asset_url }}" alt="Back View" class="pdp-thumb" width="80" height="100">
-          {%- endif -%}
-        </div>
+          </div>
+        {%- endif -%}
       </div>
 
       <!-- Right: Product Purchase & Details -->
       <div class="pdp-details">
         <div>
-          <span class="label-eyebrow">JATAYU COUTURE</span>
-          <h1 class="pdp-title">{{ product.title | default: 'The Jatayu Sovereign Oversized Tee' }}</h1>
+          {%- if product.vendor != blank -%}
+            <span class="label-eyebrow">{{ product.vendor }}</span>
+          {%- else -%}
+            <span class="label-eyebrow">{{ shop.name }}</span>
+          {%- endif -%}
+          <h1 class="pdp-title">{{ product.title }}</h1>
         </div>
 
         <div class="pdp-price" id="PdpPrice">
-          {%- if product.price != blank -%}
-            {{ product.selected_or_first_available_variant.price | money }}
-          {%- else -%}
-            ₹2,499
-          {%- endif -%}
+          {{ current_variant.price | default: product.price | money }}
         </div>
 
         <!-- Add to Bag Form -->
         {%- form 'product', product, id: 'pdp-add-form', class: 'pdp-form' -%}
-          <input type="hidden" name="id" id="selected-variant-id" value="{{ current_variant.id | default: '1' }}">
+          <input type="hidden" name="id" id="selected-variant-id" value="{{ current_variant.id }}">
 
           <div class="pdp-variants">
-            <!-- Size Selector -->
-            <div>
-              <div class="variant-label-row">
-                <span>Select Size</span>
-                <a href="/pages/size-guide" class="size-guide-trigger" target="_blank">Size Guide</a>
-              </div>
-              <div class="variant-options-row" role="radiogroup" aria-label="Sizes">
-                {%- if product.variants.size > 0 -%}
-                  {%- for variant in product.variants -%}
-                    <button
-                      type="button"
-                      class="size-option-btn {% if forloop.first %}is-selected{% endif %} {% unless variant.available %}is-disabled{% endunless %}"
-                      data-variant-id="{{ variant.id }}"
-                      data-price="{{ variant.price }}"
-                      data-sku="{{ variant.sku }}"
-                      {% unless variant.available %}disabled{% endunless %}
-                      role="radio"
-                      aria-checked="{% if forloop.first %}true{% else %}false{% endif %}"
-                    >
-                      {{ variant.title }}
-                    </button>
-                  {%- endfor -%}
-                {%- else -%}
-                  <button type="button" class="size-option-btn" data-variant-id="1" data-price="249900">S</button>
-                  <button type="button" class="size-option-btn is-selected" data-variant-id="2" data-price="249900">M</button>
-                  <button type="button" class="size-option-btn" data-variant-id="3" data-price="249900">L</button>
-                  <button type="button" class="size-option-btn" data-variant-id="4" data-price="249900">XL</button>
-                  <button type="button" class="size-option-btn" data-variant-id="5" data-price="249900">XXL</button>
-                {%- endif -%}
-              </div>
-            </div>
+            {%- unless product.has_only_default_variant -%}
+              {%- for option in product.options_with_values -%}
+                <div style="margin-bottom: 20px;">
+                  <div class="variant-label-row">
+                    <span>Select {{ option.name }}</span>
+                  </div>
+                  <div class="variant-options-row" role="radiogroup" aria-label="{{ option.name }}">
+                    {%- for value in option.values -%}
+                      {%- assign is_selected = false -%}
+                      {%- if option.selected_value == value -%}
+                        {%- assign is_selected = true -%}
+                      {%- elsif forloop.first and option.selected_value == blank -%}
+                        {%- assign is_selected = true -%}
+                      {%- endif -%}
+                      <button
+                        type="button"
+                        class="size-option-btn {% if is_selected %}is-selected{% endif %}"
+                        data-option-index="{{ option.position }}"
+                        data-value="{{ value | escape }}"
+                        role="radio"
+                        aria-checked="{% if is_selected %}true{% else %}false{% endif %}"
+                      >
+                        {{ value }}
+                      </button>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endfor -%}
+            {%- endunless -%}
           </div>
 
           <!-- Quantity Stepper & CTA -->
@@ -146,38 +135,19 @@
               {%- if product.description != blank -%}
                 {{ product.description }}
               {%- else -%}
-                <p>
-                  Cut from ultra-heavyweight 240 GSM combed cotton with an intentional, relaxed architectural drop-shoulder fit. Features high-definition screen printing of the iconic Jatayu emblem on the chest and statement scripture on the reverse.
-                </p>
-                <ul style="margin-top: 12px; padding-left: 18px; list-style: disc;">
-                  <li>100% Pre-shrunk combed organic cotton</li>
-                  <li>Oversized silhouette with ribbed crew collar</li>
-                  <li>Authentic Jatayu Ramayana heritage emblem</li>
-                  <li>Crafted for timeless durability</li>
-                </ul>
+                <p>Authentic {{ shop.name }} apparel crafted with meticulous detail and premium heritage quality.</p>
               {%- endif -%}
-            </div>
-          </div>
-
-          <!-- Sizing & Fit -->
-          <div class="accordion-item">
-            <button type="button" class="accordion-trigger" aria-expanded="false">
-              <span>Fit & Dimensions</span>
-              {% render 'icon-chevron' %}
-            </button>
-            <div class="accordion-content">
-              <p>Designed for an oversized, relaxed silhouette. If you prefer a regular tailored fit, consider sizing down one size. Model is 6'1" wearing size L.</p>
             </div>
           </div>
 
           <!-- Shipping & Returns -->
           <div class="accordion-item">
             <button type="button" class="accordion-trigger" aria-expanded="false">
-              <span>Shipping & Returns</span>
+              <span>Shipping & Delivery</span>
               {% render 'icon-chevron' %}
             </button>
             <div class="accordion-content">
-              <p>Complimentary express shipping across India on all orders. Standard delivery arrives within 3-5 business days. Easy 7-day unworn exchange policy.</p>
+              <p>Complimentary shipping across India on all prepaid orders. Orders are processed with utmost care and delivered in bespoke luxury packaging within 3-5 business days.</p>
             </div>
           </div>
         </div>
@@ -188,7 +158,7 @@
 
 {% schema %}
 {
-  "name": "Product Information",
+  "name": "Product Details",
   "settings": []
 }
 {% endschema %}

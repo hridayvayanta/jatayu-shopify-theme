@@ -1,19 +1,19 @@
 {%- comment -%}
   SECTION 8 — Footer
-  Deep Maroon background (#740101) with Warm Off-White (#FFF9F1) & Peach Ivory typography.
-  Official JATAYU logo, editorial links, policies, and newsletter subscription.
+  Connected to Shopify's real navigation and native store policies.
+  No dead links or fake sample data.
 {%- endcomment -%}
 
 <footer class="site-footer" id="SiteFooter" role="contentinfo">
   <div class="page-width">
     <div class="footer-top-grid">
-      <!-- Col 1: Brand & Official Logo -->
+      <!-- Col 1: Brand & Logo -->
       <div class="footer-brand">
-        <a href="/" aria-label="JATAYU Home">
+        <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
           {%- if section.settings.logo != blank -%}
-            <img src="{{ section.settings.logo | image_url: width: 300 }}" alt="{{ shop.name }}" class="footer-logo" width="140" height="48">
+            <img src="{{ section.settings.logo | image_url: width: 300 }}" alt="{{ shop.name }}" class="footer-logo" width="140" height="46">
           {%- else -%}
-            <img src="{{ 'jatayu-logo-light.png' | asset_url }}" onerror="this.onerror=null; this.src='{{ 'jatayu-logo.jpg' | asset_url }}';" alt="JATAYU" class="footer-logo" width="140" height="48">
+            <img src="{{ 'jatayu-logo-light.png' | asset_url }}" onerror="this.onerror=null; this.src='{{ 'jatayu-logo.jpg' | asset_url }}';" alt="{{ shop.name }}" class="footer-logo" width="140" height="46">
           {%- endif -%}
         </a>
         <p class="footer-brand-desc">
@@ -23,32 +23,50 @@
 
       <!-- Col 2: Navigation Links -->
       <div class="footer-col">
-        <h4 class="footer-heading">Explore</h4>
+        <h4 class="footer-heading">{{ section.settings.menu_title | default: 'Explore' }}</h4>
         <ul class="footer-links">
-          <li><a href="/collections/all" class="footer-link">Shop All</a></li>
-          <li><a href="/collections/t-shirts" class="footer-link">T-Shirts</a></li>
-          <li><a href="/collections/hoodies" class="footer-link">Hoodies</a></li>
-          <li><a href="/pages/our-story" class="footer-link">Our Story</a></li>
+          {%- assign footer_nav = section.settings.menu | default: linklists.footer -%}
+          {%- if footer_nav != blank and footer_nav.links.size > 0 -%}
+            {%- for link in footer_nav.links -%}
+              <li><a href="{{ link.url }}" class="footer-link">{{ link.title }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            <li><a href="{{ routes.all_products_collection_url }}" class="footer-link">All Products</a></li>
+            <li><a href="{{ routes.collections_url }}" class="footer-link">Collections</a></li>
+          {%- endif -%}
         </ul>
       </div>
 
-      <!-- Col 3: Client Assistance -->
+      <!-- Col 3: Real Store Policies -->
       <div class="footer-col">
-        <h4 class="footer-heading">Assistance</h4>
+        <h4 class="footer-heading">Policies</h4>
         <ul class="footer-links">
-          <li><a href="/pages/contact" class="footer-link">Contact</a></li>
-          <li><a href="/pages/faq" class="footer-link">FAQ</a></li>
-          <li><a href="/pages/size-guide" class="footer-link">Size Guide</a></li>
-          <li><a href="/policies/shipping-policy" class="footer-link">Shipping Policy</a></li>
-          <li><a href="/policies/refund-policy" class="footer-link">Return Policy</a></li>
+          {%- if shop.policies.size > 0 -%}
+            {%- for policy in shop.policies -%}
+              <li><a href="{{ policy.url }}" class="footer-link">{{ policy.title }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            {%- if shop.shipping_policy != blank -%}
+              <li><a href="{{ shop.shipping_policy.url }}" class="footer-link">{{ shop.shipping_policy.title }}</a></li>
+            {%- endif -%}
+            {%- if shop.refund_policy != blank -%}
+              <li><a href="{{ shop.refund_policy.url }}" class="footer-link">{{ shop.refund_policy.title }}</a></li>
+            {%- endif -%}
+            {%- if shop.privacy_policy != blank -%}
+              <li><a href="{{ shop.privacy_policy.url }}" class="footer-link">{{ shop.privacy_policy.title }}</a></li>
+            {%- endif -%}
+            {%- if shop.terms_of_service != blank -%}
+              <li><a href="{{ shop.terms_of_service.url }}" class="footer-link">{{ shop.terms_of_service.title }}</a></li>
+            {%- endif -%}
+          {%- endif -%}
         </ul>
       </div>
 
-      <!-- Col 4: Dispatch / Newsletter -->
+      <!-- Col 4: Newsletter -->
       <div class="footer-col">
-        <h4 class="footer-heading">The Chronicle</h4>
+        <h4 class="footer-heading">{{ section.settings.newsletter_heading | default: 'The Chronicle' }}</h4>
         <p class="footer-brand-desc" style="margin-bottom: 16px;">
-          Subscribe to receive private invitations to new chapters and limited releases.
+          {{ section.settings.newsletter_sub | default: 'Subscribe to receive private invitations to new chapters and limited releases.' }}
         </p>
         {%- form 'customer', class: 'newsletter-form' -%}
           <input type="hidden" name="contact[tags]" value="newsletter">
@@ -58,7 +76,7 @@
               name="contact[email]"
               class="newsletter-input"
               value="{{ form.email }}"
-              placeholder="Enter your email address"
+              placeholder="Enter your email"
               aria-label="Email address"
               autocorrect="off"
               autocapitalize="off"
@@ -69,7 +87,7 @@
             </button>
           </div>
           {%- if form.posted_successfully? -%}
-            <p style="font-size: 12px; color: var(--color-ivory-peach); margin-top: 8px;">Welcome to the legacy.</p>
+            <p style="font-size: 12px; color: var(--color-offwhite); margin-top: 8px;">Welcome to the legacy.</p>
           {%- endif -%}
         {%- endform -%}
       </div>
@@ -78,11 +96,15 @@
     <!-- Footer Bottom Bar -->
     <div class="footer-bottom">
       <div>
-        &copy; {{ 'now' | date: '%Y' }} JATAYU (जटायु). All rights reserved.
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.
       </div>
       <div class="footer-legal-links">
-        <a href="/policies/privacy-policy" class="footer-link">Privacy Policy</a>
-        <a href="/policies/terms-of-service" class="footer-link">Terms & Conditions</a>
+        {%- if shop.privacy_policy != blank -%}
+          <a href="{{ shop.privacy_policy.url }}" class="footer-link">Privacy Policy</a>
+        {%- endif -%}
+        {%- if shop.terms_of_service != blank -%}
+          <a href="{{ shop.terms_of_service.url }}" class="footer-link">Terms & Conditions</a>
+        {%- endif -%}
       </div>
     </div>
   </div>
@@ -102,6 +124,30 @@
       "id": "brand_text",
       "label": "Brand Description",
       "default": "Rooted in heritage. Made for today. Luxury apparel inspired by courage and identity."
+    },
+    {
+      "type": "text",
+      "id": "menu_title",
+      "label": "Navigation Column Title",
+      "default": "Explore"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Footer Menu",
+      "default": "footer"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter Heading",
+      "default": "The Chronicle"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_sub",
+      "label": "Newsletter Subheading",
+      "default": "Subscribe to receive private invitations to new chapters and limited releases."
     }
   ]
 }
