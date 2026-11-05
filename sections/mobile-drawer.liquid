@@ -26,6 +26,16 @@
       <a href="{{ routes.all_products_collection_url }}" class="mobile-nav-link">Shop All</a>
       <a href="{{ routes.collections_url }}" class="mobile-nav-link">Collections</a>
     {%- endif -%}
+
+    {%- if shop.customer_accounts_enabled or section.settings.show_account_link -%}
+      <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="mobile-nav-link" style="font-size: 16px; color: var(--color-maroon-primary); border-top: 1px dashed var(--color-border-subtle); padding-top: 16px; margin-top: 8px;">
+        {%- if customer -%}
+          My Sanctuary Account
+        {%- else -%}
+          Sign In / Register
+        {%- endif -%}
+      </a>
+    {%- endif -%}
   </div>
 
   <div style="margin-top: auto; border-top: 1px solid var(--color-border-subtle); padding-top: 24px;">
@@ -43,6 +53,12 @@
       "id": "menu",
       "label": "Menu",
       "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account_link",
+      "label": "Show customer account link",
+      "default": true
     }
   ]
 }

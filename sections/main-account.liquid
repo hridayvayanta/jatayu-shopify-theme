@@ -1,0 +1,125 @@
+{%- comment -%}
+  JATAYU Luxury Fashion — Customer Account Dashboard
+{%- endcomment -%}
+
+<section class="customer-account-section" style="padding: clamp(60px, 8vw, 120px) 0; margin-top: var(--header-height);">
+  <div class="page-width">
+    <!-- Header Row -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--color-border-subtle); padding-bottom: 24px; margin-bottom: 40px; flex-wrap: wrap; gap: 20px;">
+      <div>
+        <span class="label-eyebrow">SANCTUARY MEMBER</span>
+        <h1 class="heading-section" style="color: var(--color-maroon-primary); margin-top: 6px;">
+          Welcome, {{ customer.first_name | default: 'Patron' }}
+        </h1>
+        <p style="font-size: 14px; color: rgba(33, 27, 25, 0.7); margin-top: 4px;">{{ customer.email }}</p>
+      </div>
+
+      <div>
+        <a href="{{ routes.account_logout_url }}" class="btn btn-secondary" style="padding: 10px 24px; font-size: 12px;">
+          Sign Out
+        </a>
+      </div>
+    </div>
+
+    <!-- Account Grid -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 48px; align-items: flex-start;">
+      <!-- Order History -->
+      <div>
+        <h2 style="font-family: var(--font-editorial); font-size: 24px; color: var(--color-maroon-primary); margin-bottom: 20px;">
+          Order Chronicle
+        </h2>
+
+        {%- paginate customer.orders by 20 -%}
+          {%- if customer.orders.size > 0 -%}
+            <div style="background: var(--color-ivory-parchment); border: 1px solid var(--color-border-sand); border-radius: 4px; overflow: hidden;">
+              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+                <thead>
+                  <tr style="border-bottom: 1px solid var(--color-border-subtle); background: rgba(116, 1, 1, 0.04); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-maroon-primary);">
+                    <th style="padding: 14px 18px;">Order</th>
+                    <th style="padding: 14px 18px;">Date</th>
+                    <th style="padding: 14px 18px;">Payment</th>
+                    <th style="padding: 14px 18px;">Fulfillment</th>
+                    <th style="padding: 14px 18px; text-align: right;">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%- for order in customer.orders -%}
+                    <tr style="border-bottom: 1px solid var(--color-border-subtle);">
+                      <td style="padding: 14px 18px; font-weight: 600;">
+                        <a href="{{ order.customer_url }}" style="color: var(--color-maroon-primary); text-decoration: underline;">
+                          {{ order.name }}
+                        </a>
+                      </td>
+                      <td style="padding: 14px 18px; color: rgba(33, 27, 25, 0.75);">
+                        {{ order.created_at | date: '%b %d, %Y' }}
+                      </td>
+                      <td style="padding: 14px 18px;">
+                        <span style="display: inline-block; padding: 3px 8px; border-radius: 2px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(33, 27, 25, 0.08);">
+                          {{ order.financial_status_label }}
+                        </span>
+                      </td>
+                      <td style="padding: 14px 18px;">
+                        <span style="display: inline-block; padding: 3px 8px; border-radius: 2px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(116, 1, 1, 0.08); color: var(--color-maroon-primary);">
+                          {{ order.fulfillment_status_label }}
+                        </span>
+                      </td>
+                      <td style="padding: 14px 18px; text-align: right; font-weight: 600;">
+                        {{ order.total_price | money }}
+                      </td>
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
+            </div>
+            {%- if paginate.pages > 1 -%}
+              <div style="margin-top: 24px; text-align: center;">
+                {{ paginate | default_pagination }}
+              </div>
+            {%- endif -%}
+          {%- else -%}
+            <div style="background: var(--color-ivory-parchment); border: 1px solid var(--color-border-sand); padding: 40px; text-align: center; border-radius: 4px;">
+              <p style="color: rgba(33, 27, 25, 0.7); font-size: 15px; margin-bottom: 20px;">You have not placed any orders in our chronicle yet.</p>
+              <a href="{{ routes.all_products_collection_url }}" class="btn btn-primary">
+                Explore The Collection
+              </a>
+            </div>
+          {%- endif -%}
+        {%- endpaginate -%}
+      </div>
+
+      <!-- Account Details & Default Address -->
+      <div style="background: var(--color-ivory-parchment); border: 1px solid var(--color-border-sand); padding: 32px; border-radius: 4px;">
+        <h3 style="font-family: var(--font-editorial); font-size: 20px; color: var(--color-maroon-primary); margin-bottom: 16px;">
+          Primary Sanctuary Address
+        </h3>
+
+        {%- if customer.default_address -%}
+          <div style="font-size: 14px; line-height: 1.6; color: var(--color-text-body); margin-bottom: 24px;">
+            <p style="font-weight: 600;">{{ customer.default_address.name }}</p>
+            {%- if customer.default_address.company != blank -%}<p>{{ customer.default_address.company }}</p>{%- endif -%}
+            <p>{{ customer.default_address.address1 }}</p>
+            {%- if customer.default_address.address2 != blank -%}<p>{{ customer.default_address.address2 }}</p>{%- endif -%}
+            <p>{{ customer.default_address.city }}, {{ customer.default_address.province_code }} {{ customer.default_address.zip }}</p>
+            <p>{{ customer.default_address.country }}</p>
+            {%- if customer.default_address.phone != blank -%}<p style="margin-top: 8px;">{{ customer.default_address.phone }}</p>{%- endif -%}
+          </div>
+        {%- else -%}
+          <p style="font-size: 14px; color: rgba(33, 27, 25, 0.7); margin-bottom: 24px;">
+            No default delivery address recorded.
+          </p>
+        {%- endif -%}
+
+        <a href="{{ routes.account_addresses_url }}" class="btn btn-secondary" style="width: 100%; justify-content: center;">
+          Manage Addresses ({{ customer.addresses_count }})
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Customer Account",
+  "settings": []
+}
+{% endschema %}
