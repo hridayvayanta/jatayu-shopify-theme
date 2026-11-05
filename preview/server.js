@@ -214,7 +214,18 @@ const server = http.createServer((req, res) => {
       if (range) {
         const parts = range.replace(/bytes=/, "").split("-");
         const start = parseInt(parts[0], 10);
-        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        let end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+
+        if (start >= fileSize || start < 0) {
+          res.writeHead(416, { 'Content-Range': `bytes */${fileSize}` });
+          res.end();
+          return;
+        }
+
+        if (end >= fileSize) {
+          end = fileSize - 1;
+        }
+
         const chunksize = (end - start) + 1;
         const file = fs.createReadStream(filePath, { start, end });
         const head = {
