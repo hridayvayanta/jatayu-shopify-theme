@@ -1,0 +1,14 @@
+{
+  "name": "Contact Page",
+  "sections": {
+    "contact": {
+      "type": "contact-form",
+      "settings": {
+        "heading": "Get in Touch"
+      }
+    }
+  },
+  "order": [
+    "contact"
+  ]
+}

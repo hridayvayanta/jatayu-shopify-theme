@@ -1,0 +1,108 @@
+{%- comment -%}
+  SECTION 8 — Footer
+  Deep Maroon background (#740101) with Warm Off-White (#FFF9F1) & Peach Ivory typography.
+  Official JATAYU logo, editorial links, policies, and newsletter subscription.
+{%- endcomment -%}
+
+<footer class="site-footer" id="SiteFooter" role="contentinfo">
+  <div class="page-width">
+    <div class="footer-top-grid">
+      <!-- Col 1: Brand & Official Logo -->
+      <div class="footer-brand">
+        <a href="/" aria-label="JATAYU Home">
+          {%- if section.settings.logo != blank -%}
+            <img src="{{ section.settings.logo | image_url: width: 300 }}" alt="{{ shop.name }}" class="footer-logo" width="140" height="48">
+          {%- else -%}
+            <img src="{{ 'jatayu-logo-light.png' | asset_url }}" onerror="this.onerror=null; this.src='{{ 'jatayu-logo.jpg' | asset_url }}';" alt="JATAYU" class="footer-logo" width="140" height="48">
+          {%- endif -%}
+        </a>
+        <p class="footer-brand-desc">
+          {{ section.settings.brand_text | default: 'Rooted in heritage. Made for today. Luxury apparel inspired by courage and identity.' }}
+        </p>
+      </div>
+
+      <!-- Col 2: Navigation Links -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Explore</h4>
+        <ul class="footer-links">
+          <li><a href="/collections/all" class="footer-link">Shop All</a></li>
+          <li><a href="/collections/t-shirts" class="footer-link">T-Shirts</a></li>
+          <li><a href="/collections/hoodies" class="footer-link">Hoodies</a></li>
+          <li><a href="/pages/our-story" class="footer-link">Our Story</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Client Assistance -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Assistance</h4>
+        <ul class="footer-links">
+          <li><a href="/pages/contact" class="footer-link">Contact</a></li>
+          <li><a href="/pages/faq" class="footer-link">FAQ</a></li>
+          <li><a href="/pages/size-guide" class="footer-link">Size Guide</a></li>
+          <li><a href="/policies/shipping-policy" class="footer-link">Shipping Policy</a></li>
+          <li><a href="/policies/refund-policy" class="footer-link">Return Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Dispatch / Newsletter -->
+      <div class="footer-col">
+        <h4 class="footer-heading">The Chronicle</h4>
+        <p class="footer-brand-desc" style="margin-bottom: 16px;">
+          Subscribe to receive private invitations to new chapters and limited releases.
+        </p>
+        {%- form 'customer', class: 'newsletter-form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="newsletter-input-group">
+            <input
+              type="email"
+              name="contact[email]"
+              class="newsletter-input"
+              value="{{ form.email }}"
+              placeholder="Enter your email address"
+              aria-label="Email address"
+              autocorrect="off"
+              autocapitalize="off"
+              required
+            >
+            <button type="submit" class="newsletter-submit" aria-label="Subscribe">
+              Join
+            </button>
+          </div>
+          {%- if form.posted_successfully? -%}
+            <p style="font-size: 12px; color: var(--color-ivory-peach); margin-top: 8px;">Welcome to the legacy.</p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+
+    <!-- Footer Bottom Bar -->
+    <div class="footer-bottom">
+      <div>
+        &copy; {{ 'now' | date: '%Y' }} JATAYU (जटायु). All rights reserved.
+      </div>
+      <div class="footer-legal-links">
+        <a href="/policies/privacy-policy" class="footer-link">Privacy Policy</a>
+        <a href="/policies/terms-of-service" class="footer-link">Terms & Conditions</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Custom Footer Logo"
+    },
+    {
+      "type": "textarea",
+      "id": "brand_text",
+      "label": "Brand Description",
+      "default": "Rooted in heritage. Made for today. Luxury apparel inspired by courage and identity."
+    }
+  ]
+}
+{% endschema %}

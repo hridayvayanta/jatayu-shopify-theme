@@ -1,0 +1,59 @@
+{%- comment -%}
+  SECTION 1 — Cinematic Hero
+  Pure, visually uncluttered fashion video presentation with lightweight poster,
+  minimalist scroll indicator, and signature scroll scale-down transition.
+{%- endcomment -%}
+
+<section class="hero-section" id="HeroSection" aria-label="JATAYU Cinematic Experience">
+  <div class="hero-video-wrapper" id="HeroVideoWrapper">
+    <video
+      class="hero-video"
+      id="HeroVideo"
+      autoplay
+      muted
+      loop
+      playsinline
+      webkit-playsinline
+      preload="auto"
+      poster="{{ section.settings.poster_image | default: 'jatayu-hero-poster.jpg' | asset_url }}"
+      aria-hidden="true"
+    >
+      {%- if section.settings.video_url != blank -%}
+        <source src="{{ section.settings.video_url }}" type="video/mp4">
+      {%- else -%}
+        <source src="{{ 'jatayu-hero.mp4' | asset_url }}" type="video/mp4">
+      {%- endif -%}
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <!-- Minimalist Scroll Indicator -->
+  <div class="hero-scroll-indicator" aria-hidden="true">
+    <span class="hero-scroll-text">Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cinematic Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Video URL (.mp4)",
+      "info": "Leave blank to use default JATAYU campaign video asset"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Lightweight Poster Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cinematic Hero"
+    }
+  ]
+}
+{% endschema %}

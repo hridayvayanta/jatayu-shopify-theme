@@ -1,0 +1,42 @@
+{
+  "general": {
+    "skip_to_content": "Skip to content",
+    "share": "Share",
+    "continue_shopping": "Continue Shopping",
+    "back": "Back"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to Bag",
+      "sold_out": "Sold Out",
+      "unavailable": "Unavailable",
+      "quantity": "Quantity",
+      "select_size": "Select Size",
+      "size_guide": "Size Guide"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Shopping Bag",
+      "empty": "Your shopping bag is empty",
+      "subtotal": "Subtotal",
+      "checkout": "Proceed to Checkout",
+      "remove": "Remove",
+      "taxes_and_shipping_policy_at_checkout_html": "Taxes and shipping calculated at checkout."
+    }
+  },
+  "sections": {
+    "header": {
+      "shop": "Shop",
+      "collections": "Collections",
+      "our_story": "Our Story",
+      "search": "Search",
+      "cart": "Shopping Bag"
+    },
+    "footer": {
+      "newsletter_title": "The Chronicle",
+      "newsletter_placeholder": "Enter your email address",
+      "newsletter_button": "Join"
+    }
+  }
+}

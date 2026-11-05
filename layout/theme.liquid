@@ -1,0 +1,65 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Fonts: Cormorant Garamond (Editorial), Manrope (Interface), Noto Serif Devanagari (Heritage) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- else -%}
+      <link rel="icon" type="image/jpeg" href="{{ 'jatayu-logo.jpg' | asset_url }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    {{ content_for_header }}
+
+    <!-- JATAYU Luxury Fashion Design Tokens & Stylesheet -->
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+  </head>
+
+  <body class="template-{{ template.name | handle }} {% if template.suffix %}template-suffix-{{ template.suffix | handle }}{% endif %}">
+    <a class="skip-to-content-link" href="#MainContent">
+      Skip to content
+    </a>
+
+    {% section 'announcement-bar' %}
+    {% section 'header' %}
+
+    <main id="MainContent" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+
+    <!-- Drawers & Modals -->
+    {% section 'cart-drawer' %}
+    {% section 'mobile-drawer' %}
+
+    <!-- GSAP & ScrollTrigger for Signature Cinematic Hero Motion -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+    <!-- Theme Behavior & Ajax Cart API -->
+    {{ 'theme.js' | asset_url | script_tag }}
+  </body>
+</html>

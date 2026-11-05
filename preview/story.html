@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Story | JATAYU (जटायु)</title>
+    <link rel="icon" type="image/jpeg" href="/assets/jatayu-logo.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/theme.css">
+  </head>
+  <body>
+    <header class="site-header scrolled">
+      <div class="header-container">
+        <nav class="header-nav-left">
+          <a href="/collections" class="nav-link">Shop</a>
+          <a href="/collections" class="nav-link">Collections</a>
+          <a href="/pages/our-story" class="nav-link active">Our Story</a>
+        </nav>
+        <div class="header-logo-center">
+          <a href="/"><img src="/assets/jatayu-logo-transparent.png" onerror="this.onerror=null; this.src='/assets/jatayu-logo.jpg';" alt="JATAYU" class="header-logo-img" width="160" height="52"></a>
+        </div>
+        <div class="header-actions-right">
+          <a href="/cart" class="header-action-btn" data-cart-open>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            <span class="header-cart-count" style="display: none;">0</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main id="MainContent" role="main" style="padding: 140px 0 100px;">
+      <div class="page-width">
+        <div style="text-align: center; max-width: 900px; margin: 0 auto 64px;">
+          <span class="label-eyebrow">OUR ORIGIN & ETHOS</span>
+          <h1 class="display-large" style="color: var(--color-maroon-primary); margin-bottom: 24px;">A Legacy of Courage.</h1>
+          <p class="body-lead" style="margin: 0 auto; font-size: 1.3rem;">
+            "Inspired by Jatayu's unwavering valor in the Ramayana, JATAYU bridges sacred Indian heritage with international contemporary fashion."
+          </p>
+        </div>
+
+        <div class="brand-story-grid" style="margin-bottom: 80px;">
+          <div class="brand-story-media">
+            <img src="/assets/story-heritage.jpg" alt="JATAYU Sacred Heritage" class="brand-story-img" width="600" height="700">
+          </div>
+          <div class="brand-story-content">
+            <span class="label-eyebrow">THE INSPIRATION</span>
+            <h2 class="heading-section" style="color: var(--color-maroon-primary);">The Spirit of the Golden Eagle</h2>
+            <div class="brand-story-text">
+              <p>In the ancient epic of the Ramayana, when Maa Sita was abducted, it was Jatayu—the divine eagle—who witnessed injustice and rose into the sky without hesitation. Though outmatched, he fought with fearless courage and laid down his life in noble duty.</p>
+              <p style="margin-top: 16px;">At JATAYU, we honor that timeless spirit not as distant mythology, but as living principle. Courage is not the absence of fear, but the conviction to rise when summoned.</p>
+              <p style="margin-top: 16px;">Our garments are crafted to be worn with purpose—an armor of quiet strength, pride in cultural roots, and effortless modern elegance.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="background-color: var(--color-ivory-parchment); padding: clamp(48px, 6vw, 80px); text-align: center; border-radius: 4px; border: 1px solid var(--color-border-sand); margin-top: 40px;">
+          <span class="label-eyebrow">CONTEMPORARY LUXURY</span>
+          <h3 class="heading-section" style="color: var(--color-maroon-primary); margin-bottom: 16px;">Modern Silhouettes. Enduring Quality.</h3>
+          <p style="max-width: 720px; margin: 0 auto 32px; font-size: 16px; line-height: 1.7; color: rgba(33, 27, 25, 0.85);">
+            Every piece begins with heavyweight, durable cotton weaves engineered for exceptional drape, comfort, and longevity. Designed for those who honor where they come from while shaping where they are going.
+          </p>
+          <a href="/collections" class="btn btn-primary">Explore The Collection</a>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="page-width">
+        <div class="footer-bottom" style="border: none; padding-top: 0;">
+          <div>&copy; 2026 JATAYU (जटायु). All rights reserved.</div>
+          <div class="footer-legal-links">
+            <a href="/" class="footer-link">Home</a>
+            <a href="/collections" class="footer-link">Shop</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Cart Drawer -->
+    <div class="cart-drawer-overlay" id="cart-drawer-overlay" aria-hidden="true"></div>
+    <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true">
+      <div class="cart-drawer-header">
+        <h3 class="cart-drawer-title">Shopping Bag</h3>
+        <button type="button" class="cart-drawer-close" data-cart-close><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div class="cart-drawer-items" id="cart-drawer-items"></div>
+      <div class="cart-drawer-footer">
+        <div class="cart-subtotal-row"><span>Subtotal</span><span class="cart-subtotal-price" id="cart-drawer-subtotal">₹0</span></div>
+        <a href="/checkout" class="btn btn-primary cart-checkout-btn">Proceed to Checkout</a>
+      </div>
+    </aside>
+
+    <script src="/assets/theme.js"></script>
+  </body>
+</html>

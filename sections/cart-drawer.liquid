@@ -1,0 +1,67 @@
+{%- comment -%}
+  AJAX Cart Drawer Component
+  Connected to real Shopify Ajax Cart API (/cart.js, /cart/add.js, /cart/change.js)
+{%- endcomment -%}
+
+<div class="cart-drawer-overlay" id="cart-drawer-overlay" aria-hidden="true"></div>
+
+<aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle">
+  <div class="cart-drawer-header">
+    <h3 class="cart-drawer-title" id="CartDrawerTitle">Shopping Bag</h3>
+    <button type="button" class="cart-drawer-close" data-cart-close aria-label="Close Shopping Bag">
+      {% render 'icon-close' %}
+    </button>
+  </div>
+
+  <div class="cart-drawer-items" id="cart-drawer-items">
+    {%- comment -%} Cart items rendered dynamically by theme.js or initial Liquid render {%- endcomment -%}
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-empty-message">
+        <p>Your shopping bag is empty.</p>
+        <a href="/collections/all" class="btn btn-secondary" style="margin-top: 12px;" data-cart-close>Explore Collection</a>
+      </div>
+    {%- else -%}
+      {%- for item in cart.items -%}
+        <div class="cart-item" data-line-id="{{ item.id }}">
+          <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}" class="cart-item-img" width="80" height="100">
+          <div class="cart-item-details">
+            <h4 class="cart-item-title">{{ item.product.title }}</h4>
+            {%- unless item.product.has_only_default_variant -%}
+              <span class="cart-item-variant">{{ item.variant.title }}</span>
+            {%- endunless -%}
+            <span class="cart-item-price">{{ item.final_price | money }}</span>
+            <div class="cart-item-qty-stepper">
+              <button class="qty-btn" onclick="window.JatayuCart.updateQty('{{ item.key }}', {{ item.quantity | minus: 1 }})">-</button>
+              <input type="text" class="qty-input" value="{{ item.quantity }}" readonly aria-label="Quantity">
+              <button class="qty-btn" onclick="window.JatayuCart.updateQty('{{ item.key }}', {{ item.quantity | plus: 1 }})">+</button>
+            </div>
+          </div>
+          <button class="cart-item-remove" onclick="window.JatayuCart.updateQty('{{ item.key }}', 0)" title="Remove item">Remove</button>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+
+  <div class="cart-drawer-footer">
+    <div class="cart-subtotal-row">
+      <span>Subtotal</span>
+      <span class="cart-subtotal-price" id="cart-drawer-subtotal">{{ cart.total_price | money }}</span>
+    </div>
+    <p style="font-size: 11px; color: rgba(33, 27, 25, 0.6); margin-top: -8px;">
+      Taxes and shipping calculated at checkout.
+    </p>
+    <a href="/checkout" class="btn btn-primary cart-checkout-btn">
+      Proceed to Checkout
+    </a>
+    <button type="button" class="btn-text-arrow" data-cart-close style="justify-content: center; width: 100%; border: none;">
+      Continue Shopping
+    </button>
+  </div>
+</aside>
+
+{% schema %}
+{
+  "name": "Cart Drawer",
+  "settings": []
+}
+{% endschema %}

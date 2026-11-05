@@ -1,0 +1,194 @@
+{%- comment -%}
+  JATAYU Luxury Fashion — Main Product Section
+  Shopify Online Store 2.0 Product Detail Page
+  Full variant selection (Size & Color), Qikink fulfillment compatibility,
+  Gallery thumbnail navigation, Ajax Add to Bag with loading state, and Accordion specs.
+{%- endcomment -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured_media = current_variant.featured_media | default: product.featured_media | default: product.media[0]
+-%}
+
+<section class="pdp-section" id="MainProductSection" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <div class="pdp-grid">
+      <!-- Left: Product Media Gallery -->
+      <div class="pdp-gallery">
+        <div class="pdp-main-image-wrap">
+          {%- if featured_media != blank -%}
+            <img
+              src="{{ featured_media | image_url: width: 1400 }}"
+              alt="{{ featured_media.alt | default: product.title | escape }}"
+              class="pdp-main-image"
+              id="PdpMainImage"
+              width="700"
+              height="875"
+            >
+          {%- else -%}
+            <img
+              src="{{ 'product-tee-charcoal-front.jpg' | asset_url }}"
+              alt="{{ product.title | default: 'The Jatayu Sovereign Oversized Tee' }}"
+              class="pdp-main-image"
+              id="PdpMainImage"
+              width="700"
+              height="875"
+            >
+          {%- endif -%}
+        </div>
+
+        <!-- Gallery Thumbnails -->
+        <div class="pdp-thumbnails">
+          {%- if product.media.size > 1 -%}
+            {%- for media in product.media -%}
+              <img
+                src="{{ media | image_url: width: 240 }}"
+                data-full-src="{{ media | image_url: width: 1400 }}"
+                alt="{{ media.alt | default: product.title | escape }}"
+                class="pdp-thumb {% if forloop.first %}is-active{% endif %}"
+                width="80"
+                height="100"
+              >
+            {%- endfor -%}
+          {%- else -%}
+            <!-- Fallback Thumbnails for catalog/preview -->
+            <img src="{{ 'product-tee-charcoal-front.jpg' | asset_url }}" data-full-src="{{ 'product-tee-charcoal-front.jpg' | asset_url }}" alt="Front View" class="pdp-thumb is-active" width="80" height="100">
+            <img src="{{ 'product-tee-charcoal-back.jpg' | asset_url }}" data-full-src="{{ 'product-tee-charcoal-back.jpg' | asset_url }}" alt="Back View" class="pdp-thumb" width="80" height="100">
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Right: Product Purchase & Details -->
+      <div class="pdp-details">
+        <div>
+          <span class="label-eyebrow">JATAYU COUTURE</span>
+          <h1 class="pdp-title">{{ product.title | default: 'The Jatayu Sovereign Oversized Tee' }}</h1>
+        </div>
+
+        <div class="pdp-price" id="PdpPrice">
+          {%- if product.price != blank -%}
+            {{ product.selected_or_first_available_variant.price | money }}
+          {%- else -%}
+            ₹2,499
+          {%- endif -%}
+        </div>
+
+        <!-- Add to Bag Form -->
+        {%- form 'product', product, id: 'pdp-add-form', class: 'pdp-form' -%}
+          <input type="hidden" name="id" id="selected-variant-id" value="{{ current_variant.id | default: '1' }}">
+
+          <div class="pdp-variants">
+            <!-- Size Selector -->
+            <div>
+              <div class="variant-label-row">
+                <span>Select Size</span>
+                <a href="/pages/size-guide" class="size-guide-trigger" target="_blank">Size Guide</a>
+              </div>
+              <div class="variant-options-row" role="radiogroup" aria-label="Sizes">
+                {%- if product.variants.size > 0 -%}
+                  {%- for variant in product.variants -%}
+                    <button
+                      type="button"
+                      class="size-option-btn {% if forloop.first %}is-selected{% endif %} {% unless variant.available %}is-disabled{% endunless %}"
+                      data-variant-id="{{ variant.id }}"
+                      data-price="{{ variant.price }}"
+                      data-sku="{{ variant.sku }}"
+                      {% unless variant.available %}disabled{% endunless %}
+                      role="radio"
+                      aria-checked="{% if forloop.first %}true{% else %}false{% endif %}"
+                    >
+                      {{ variant.title }}
+                    </button>
+                  {%- endfor -%}
+                {%- else -%}
+                  <button type="button" class="size-option-btn" data-variant-id="1" data-price="249900">S</button>
+                  <button type="button" class="size-option-btn is-selected" data-variant-id="2" data-price="249900">M</button>
+                  <button type="button" class="size-option-btn" data-variant-id="3" data-price="249900">L</button>
+                  <button type="button" class="size-option-btn" data-variant-id="4" data-price="249900">XL</button>
+                  <button type="button" class="size-option-btn" data-variant-id="5" data-price="249900">XXL</button>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+
+          <!-- Quantity Stepper & CTA -->
+          <div class="pdp-qty-cta" style="margin-top: 24px;">
+            <div class="pdp-qty-stepper">
+              <button type="button" class="qty-btn" onclick="const q=this.nextElementSibling; if(q.value>1)q.value--;" aria-label="Decrease quantity">-</button>
+              <input type="number" name="quantity" class="qty-input" value="1" min="1" aria-label="Quantity">
+              <button type="button" class="qty-btn" onclick="const q=this.previousElementSibling; q.value++;" aria-label="Increase quantity">+</button>
+            </div>
+
+            <button
+              type="submit"
+              name="add"
+              class="btn btn-primary pdp-add-btn"
+              {% if product.available == false %}disabled{% endif %}
+            >
+              {%- if product.available == false -%}
+                <span>Sold Out</span>
+              {%- else -%}
+                <span>Add to Bag</span>
+              {%- endif -%}
+            </button>
+          </div>
+        {%- endform -%}
+
+        <!-- Product Accordions -->
+        <div class="pdp-accordions" style="margin-top: 32px;">
+          <!-- Description -->
+          <div class="accordion-item is-open">
+            <button type="button" class="accordion-trigger" aria-expanded="true">
+              <span>Description & Craft</span>
+              {% render 'icon-chevron' %}
+            </button>
+            <div class="accordion-content">
+              {%- if product.description != blank -%}
+                {{ product.description }}
+              {%- else -%}
+                <p>
+                  Cut from ultra-heavyweight 240 GSM combed cotton with an intentional, relaxed architectural drop-shoulder fit. Features high-definition screen printing of the iconic Jatayu emblem on the chest and statement scripture on the reverse.
+                </p>
+                <ul style="margin-top: 12px; padding-left: 18px; list-style: disc;">
+                  <li>100% Pre-shrunk combed organic cotton</li>
+                  <li>Oversized silhouette with ribbed crew collar</li>
+                  <li>Authentic Jatayu Ramayana heritage emblem</li>
+                  <li>Crafted for timeless durability</li>
+                </ul>
+              {%- endif -%}
+            </div>
+          </div>
+
+          <!-- Sizing & Fit -->
+          <div class="accordion-item">
+            <button type="button" class="accordion-trigger" aria-expanded="false">
+              <span>Fit & Dimensions</span>
+              {% render 'icon-chevron' %}
+            </button>
+            <div class="accordion-content">
+              <p>Designed for an oversized, relaxed silhouette. If you prefer a regular tailored fit, consider sizing down one size. Model is 6'1" wearing size L.</p>
+            </div>
+          </div>
+
+          <!-- Shipping & Returns -->
+          <div class="accordion-item">
+            <button type="button" class="accordion-trigger" aria-expanded="false">
+              <span>Shipping & Returns</span>
+              {% render 'icon-chevron' %}
+            </button>
+            <div class="accordion-content">
+              <p>Complimentary express shipping across India on all orders. Standard delivery arrives within 3-5 business days. Easy 7-day unworn exchange policy.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Information",
+  "settings": []
+}
+{% endschema %}
