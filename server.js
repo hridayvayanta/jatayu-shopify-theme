@@ -3,44 +3,30 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const ROOT_DIR = path.resolve(__dirname, '..');
+const ROOT_DIR = __dirname;
 
-// In-memory mock Shopify Ajax Cart state for testing
+// In-memory Cart state
 let cartState = {
-  token: 'mock-shopify-cart-token-jatayu',
-  note: null,
-  attributes: {},
-  original_total_price: 0,
+  token: 'jatayu-cart-token',
   total_price: 0,
-  total_discount: 0,
-  total_weight: 0,
   item_count: 0,
   items: [],
-  requires_shipping: true,
-  currency: 'INR',
-  items_subtotal_price: 0
+  currency: 'INR'
 };
 
-// Catalog database for mock checkout & variant resolution
+// Catalog database
 const catalog = {
   '101': { id: 101, title: 'The Jatayu Sovereign Oversized Tee', variant_title: 'Vintage Charcoal / L', price: 249900, image: '/assets/product-tee-charcoal-front.jpg' },
   '102': { id: 102, title: 'The Jatayu Sovereign Oversized Tee', variant_title: 'Peach Ivory / M', price: 249900, image: '/assets/product-tee-ivory-front.jpg' },
   '103': { id: 103, title: 'Sacred Flight Heavyweight Hoodie', variant_title: 'Deep Maroon / L', price: 429900, image: '/assets/product-hoodie-maroon-front.jpg' },
   '104': { id: 104, title: 'Garuda Crest Heavyweight Tee', variant_title: 'Heritage Maroon / XL', price: 229900, image: '/assets/product-tee-maroon-front.jpg' },
   '201': { id: 201, title: 'Courage Embroidered Pullover Hoodie', variant_title: 'Vintage Charcoal / L', price: 449900, image: '/assets/product-hoodie-charcoal-front.jpg' },
-  '202': { id: 202, title: 'Vayu Minimalist Classic Crew', variant_title: 'Sand Beige / M', price: 199900, image: '/assets/product-tee-sand-front.jpg' },
-  '1': { id: 1, title: 'The Jatayu Sovereign Oversized Tee', variant_title: 'S', price: 249900, image: '/assets/product-tee-charcoal-front.jpg' },
-  '2': { id: 2, title: 'The Jatayu Sovereign Oversized Tee', variant_title: 'M', price: 249900, image: '/assets/product-tee-charcoal-front.jpg' },
-  '3': { id: 3, title: 'The Jatayu Sovereign Oversized Tee', variant_title: 'L', price: 249900, image: '/assets/product-tee-charcoal-front.jpg' },
-  '4': { id: 4, title: 'The Jatayu Sovereign Oversized Tee', variant_title: 'XL', price: 249900, image: '/assets/product-tee-charcoal-front.jpg' },
-  '5': { id: 5, title: 'The Jatayu Sovereign Oversized Tee', variant_title: 'XXL', price: 249900, image: '/assets/product-tee-charcoal-front.jpg' }
+  '202': { id: 202, title: 'Vayu Minimalist Classic Crew', variant_title: 'Sand Beige / M', price: 199900, image: '/assets/product-tee-sand-front.jpg' }
 };
 
 function recalculateCart() {
   cartState.item_count = cartState.items.reduce((sum, item) => sum + item.quantity, 0);
   cartState.total_price = cartState.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  cartState.original_total_price = cartState.total_price;
-  cartState.items_subtotal_price = cartState.total_price;
 }
 
 const mimeTypes = {
@@ -60,14 +46,14 @@ const server = http.createServer((req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   const pathname = parsedUrl.pathname;
 
-  // 1. Shopify Ajax Cart API endpoint: GET /cart.js
+  // 1. Cart API: GET /cart.js
   if (pathname === '/cart.js' && req.method === 'GET') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(cartState));
     return;
   }
 
-  // 2. Shopify Ajax Cart API endpoint: POST /cart/add.js
+  // 2. Cart API: POST /cart/add.js
   if (pathname === '/cart/add.js' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => { body += chunk; });
@@ -79,8 +65,8 @@ const server = http.createServer((req, res) => {
 
         const productInfo = catalog[variantId] || {
           id: Number(variantId),
-          title: 'Jatayu Heritage Apparel',
-          variant_title: 'Standard',
+          title: 'The Jatayu Sovereign Oversized Tee',
+          variant_title: 'Vintage Charcoal / L',
           price: 249900,
           image: '/assets/product-tee-charcoal-front.jpg'
         };
@@ -113,7 +99,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // 3. Shopify Ajax Cart API endpoint: POST /cart/change.js
+  // 3. Cart API: POST /cart/change.js
   if (pathname === '/cart/change.js' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => { body += chunk; });
@@ -142,55 +128,24 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // 4. Shopify Checkout redirect simulation
-  if (pathname === '/checkout') {
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(`
-      <!doctype html>
-      <html>
-      <head>
-        <title>Shopify Checkout | JATAYU</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
-        <style>
-          body { font-family: 'Manrope', sans-serif; background: #F7DBBD; color: #211B19; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-          .checkout-box { background: #FFF9F1; padding: 48px; border-radius: 4px; max-width: 520px; width: 100%; text-align: center; border: 1px solid rgba(116, 1, 1, 0.15); box-shadow: 0 10px 40px rgba(33,27,25,0.08); }
-          h1 { font-family: 'Cormorant Garamond', serif; color: #740101; font-size: 32px; margin-bottom: 12px; }
-          .btn { display: inline-block; background: #740101; color: #FFF9F1; padding: 14px 28px; text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-size: 13px; margin-top: 24px; }
-        </style>
-      </head>
-      <body>
-        <div class="checkout-box">
-          <img src="/assets/jatayu-logo.jpg" alt="JATAYU" style="height: 48px; margin-bottom: 24px;">
-          <h1>Shopify Checkout Gateway</h1>
-          <p>This is the standard Shopify checkout handoff point. Once connected to your live Shopify store, your actual configured payment gateways (UPI, Razorpay, Cards, NetBanking, COD) and shipping zones handle the transaction seamlessly.</p>
-          <p style="margin-top: 16px; font-weight: 600; color: #740101;">Cart Subtotal: ₹${(cartState.total_price / 100).toLocaleString('en-IN')}</p>
-          <a href="/" class="btn">Return to Store</a>
-        </div>
-      </body>
-      </html>
-    `);
-    return;
-  }
-
-  // 5. Static File Routing
+  // 4. Static File Routing
   let filePath;
   if (pathname === '/' || pathname === '/index.html') {
-    filePath = path.join(__dirname, 'index.html');
+    filePath = path.join(ROOT_DIR, 'index.html');
+  } else if (pathname === '/checkout' || pathname === '/checkout.html') {
+    filePath = path.join(ROOT_DIR, 'checkout.html');
   } else if (pathname.startsWith('/products/')) {
-    filePath = path.join(__dirname, 'product.html');
+    filePath = path.join(ROOT_DIR, 'product.html');
   } else if (pathname.startsWith('/collections')) {
-    filePath = path.join(__dirname, 'collection.html');
-  } else if (pathname === '/pages/our-story') {
-    filePath = path.join(__dirname, 'story.html');
-  } else if (pathname === '/pages/contact') {
-    filePath = path.join(__dirname, 'contact.html');
-  } else if (pathname === '/pages/faq') {
-    filePath = path.join(__dirname, 'faq.html');
-  } else if (pathname === '/pages/size-guide') {
-    filePath = path.join(__dirname, 'size-guide.html');
-  } else if (pathname.startsWith('/assets/')) {
-    filePath = path.join(ROOT_DIR, pathname);
+    filePath = path.join(ROOT_DIR, 'collection.html');
+  } else if (pathname === '/pages/our-story' || pathname === '/story') {
+    filePath = path.join(ROOT_DIR, 'story.html');
+  } else if (pathname === '/pages/contact' || pathname === '/contact') {
+    filePath = path.join(ROOT_DIR, 'contact.html');
+  } else if (pathname === '/pages/faq' || pathname === '/faq') {
+    filePath = path.join(ROOT_DIR, 'faq.html');
+  } else if (pathname === '/pages/size-guide' || pathname === '/size-guide') {
+    filePath = path.join(ROOT_DIR, 'size-guide.html');
   } else {
     filePath = path.join(ROOT_DIR, pathname);
   }
@@ -208,22 +163,20 @@ const server = http.createServer((req, res) => {
 
     // Video stream support (Range requests for smooth playback on Safari/Chrome)
     if (ext === '.mp4') {
-      const range = req.headers.range;
       const fileSize = stats.size;
+      const range = req.headers.range;
 
       if (range) {
         const parts = range.replace(/bytes=/, "").split("-");
         const start = parseInt(parts[0], 10);
-        let end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
 
-        if (start >= fileSize || start < 0) {
-          res.writeHead(416, { 'Content-Range': `bytes */${fileSize}` });
-          res.end();
-          return;
-        }
-
-        if (end >= fileSize) {
-          end = fileSize - 1;
+        if (start >= fileSize || end >= fileSize) {
+          res.writeHead(416, {
+            'Content-Range': `bytes */${fileSize}`,
+            'Content-Type': 'video/mp4'
+          });
+          return res.end();
         }
 
         const chunksize = (end - start) + 1;
@@ -240,6 +193,7 @@ const server = http.createServer((req, res) => {
         const head = {
           'Content-Length': fileSize,
           'Content-Type': 'video/mp4',
+          'Accept-Ranges': 'bytes'
         };
         res.writeHead(200, head);
         fs.createReadStream(filePath).pipe(res);
@@ -247,12 +201,16 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    // Default static file serving
-    res.writeHead(200, { 'Content-Type': contentType });
+    // Standard static file response
+    res.writeHead(200, {
+      'Content-Type': contentType,
+      'Content-Length': stats.size,
+      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=31536000'
+    });
     fs.createReadStream(filePath).pipe(res);
   });
 });
 
 server.listen(PORT, () => {
-  console.log(`JATAYU Luxury Fashion local development preview server running at http://localhost:${PORT}`);
+  console.log(`JATAYU Luxury Fashion server running at http://localhost:${PORT}`);
 });

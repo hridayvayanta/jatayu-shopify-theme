@@ -1,0 +1,13 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/collections", "destination": "/collection.html" },
+    { "source": "/checkout", "destination": "/checkout.html" },
+    { "source": "/pages/our-story", "destination": "/story.html" },
+    { "source": "/pages/size-guide", "destination": "/size-guide.html" },
+    { "source": "/pages/faq", "destination": "/faq.html" },
+    { "source": "/pages/contact", "destination": "/contact.html" },
+    { "source": "/products/:slug*", "destination": "/product.html" }
+  ]
+}

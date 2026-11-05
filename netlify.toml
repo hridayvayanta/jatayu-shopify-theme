@@ -1,0 +1,34 @@
+[[redirects]]
+  from = "/collections"
+  to = "/collection.html"
+  status = 200
+
+[[redirects]]
+  from = "/checkout"
+  to = "/checkout.html"
+  status = 200
+
+[[redirects]]
+  from = "/pages/our-story"
+  to = "/story.html"
+  status = 200
+
+[[redirects]]
+  from = "/pages/size-guide"
+  to = "/size-guide.html"
+  status = 200
+
+[[redirects]]
+  from = "/pages/faq"
+  to = "/faq.html"
+  status = 200
+
+[[redirects]]
+  from = "/pages/contact"
+  to = "/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/products/*"
+  to = "/product.html"
+  status = 200

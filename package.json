@@ -1,0 +1,19 @@
+{
+  "name": "jatayu-fashion",
+  "version": "1.0.0",
+  "description": "JATAYU (जटायु) — Premium Indian Heritage-Inspired Luxury Fashion Label",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "jatayu",
+    "luxury-fashion",
+    "indian-heritage",
+    "ramayana",
+    "fashion-brand"
+  ],
+  "author": "JATAYU",
+  "license": "UNLICENSED"
+}

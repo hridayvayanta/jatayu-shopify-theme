@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | JATAYU (जटायु) — Official Luxury Fashion</title>
+    <link rel="icon" type="image/jpeg" href="/assets/jatayu-logo.jpg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/theme.css">
+    <style>
+      .checkout-body {
+        background-color: var(--color-ivory-warm);
+        color: var(--color-text-body);
+        font-family: var(--font-interface);
+        min-height: 100vh;
+      }
+      .checkout-header {
+        border-bottom: 1px solid var(--color-border-subtle);
+        background: var(--color-ivory-warm);
+        padding: 20px 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .checkout-header-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .checkout-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 60px;
+        padding: 48px 0 80px;
+      }
+      @media (max-width: 900px) {
+        .checkout-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+      }
+      .checkout-section-title {
+        font-family: var(--font-editorial);
+        font-size: 24px;
+        color: var(--color-maroon-primary);
+        margin-bottom: 20px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--color-border-subtle);
+      }
+      .checkout-form-group {
+        margin-bottom: 16px;
+      }
+      .checkout-label {
+        display: block;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: var(--color-text-body);
+      }
+      .checkout-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid var(--color-border-subtle);
+        background: var(--color-ivory-parchment);
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--color-text-body);
+        border-radius: 2px;
+        outline: none;
+        transition: border-color var(--transition-fast);
+      }
+      .checkout-input:focus {
+        border-color: var(--color-maroon-primary);
+        background: var(--color-offwhite);
+      }
+      .checkout-row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .payment-options-box {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .payment-option-card {
+        border: 1px solid var(--color-border-subtle);
+        background: var(--color-ivory-parchment);
+        padding: 16px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+      .payment-option-card.is-selected {
+        border-color: var(--color-maroon-primary);
+        background: rgba(116, 1, 1, 0.04);
+      }
+      .payment-radio {
+        accent-color: var(--color-maroon-primary);
+        width: 18px;
+        height: 18px;
+      }
+      .order-summary-card {
+        background: var(--color-ivory-parchment);
+        border: 1px solid var(--color-border-sand);
+        border-radius: 4px;
+        padding: 32px;
+        position: sticky;
+        top: 100px;
+      }
+      .order-summary-item {
+        display: flex;
+        gap: 16px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--color-border-subtle);
+      }
+      .order-summary-item-img {
+        width: 64px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 2px;
+      }
+      .confirmation-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(33, 27, 25, 0.85);
+        backdrop-filter: blur(6px);
+        z-index: 1000;
+        overflow-y: auto;
+        padding: 40px 20px;
+        align-items: center;
+        justify-content: center;
+      }
+      .confirmation-card {
+        max-width: 560px;
+        width: 100%;
+        margin: auto;
+        background: var(--color-ivory-warm);
+        border: 1px solid var(--color-border-sand);
+        padding: clamp(32px, 6vw, 56px);
+        border-radius: 6px;
+        text-align: center;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+      }
+    </style>
+  </head>
+  <body class="checkout-body">
+
+    <!-- Checkout Header -->
+    <header class="checkout-header">
+      <div class="page-width checkout-header-inner">
+        <a href="/" aria-label="JATAYU Home">
+          <img src="/assets/jatayu-logo-transparent.png" onerror="this.onerror=null; this.src='/assets/jatayu-logo.jpg';" alt="JATAYU" style="height: 44px; width: auto;">
+        </a>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-maroon-primary); font-weight: 600;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>Sanctuary Secure Checkout</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-width">
+      <div class="checkout-grid">
+        
+        <!-- Left: Details & Payment Form -->
+        <div>
+          <form id="CheckoutForm" onsubmit="handlePlaceOrder(event);">
+            <!-- Contact -->
+            <div style="margin-bottom: 36px;">
+              <h2 class="checkout-section-title">1. Contact Information</h2>
+              <div class="checkout-form-group">
+                <label for="checkout-email" class="checkout-label">Email Address (for order chronicle)</label>
+                <input type="email" id="checkout-email" required class="checkout-input" placeholder="you@domain.com">
+              </div>
+              <div class="checkout-form-group">
+                <label for="checkout-phone" class="checkout-label">Mobile Number (for delivery tracking)</label>
+                <input type="tel" id="checkout-phone" required class="checkout-input" placeholder="+91 98765 43210">
+              </div>
+            </div>
+
+            <!-- Shipping Address -->
+            <div style="margin-bottom: 36px;">
+              <h2 class="checkout-section-title">2. Sanctuary Delivery Address</h2>
+              <div class="checkout-row-2">
+                <div class="checkout-form-group">
+                  <label for="checkout-fname" class="checkout-label">First Name</label>
+                  <input type="text" id="checkout-fname" required class="checkout-input">
+                </div>
+                <div class="checkout-form-group">
+                  <label for="checkout-lname" class="checkout-label">Last Name</label>
+                  <input type="text" id="checkout-lname" required class="checkout-input">
+                </div>
+              </div>
+
+              <div class="checkout-form-group">
+                <label for="checkout-address" class="checkout-label">Street Address & Landmark</label>
+                <input type="text" id="checkout-address" required class="checkout-input" placeholder="House / Flat / Building, Street">
+              </div>
+
+              <div class="checkout-row-2">
+                <div class="checkout-form-group">
+                  <label for="checkout-city" class="checkout-label">City</label>
+                  <input type="text" id="checkout-city" required class="checkout-input">
+                </div>
+                <div class="checkout-form-group">
+                  <label for="checkout-state" class="checkout-label">State</label>
+                  <input type="text" id="checkout-state" required class="checkout-input">
+                </div>
+              </div>
+
+              <div class="checkout-row-2">
+                <div class="checkout-form-group">
+                  <label for="checkout-pincode" class="checkout-label">PIN Code</label>
+                  <input type="text" id="checkout-pincode" required class="checkout-input" pattern="[0-9]{6}" placeholder="e.g. 110001">
+                </div>
+                <div class="checkout-form-group">
+                  <label class="checkout-label">Country</label>
+                  <input type="text" value="India" readonly class="checkout-input" style="background: rgba(0,0,0,0.03);">
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div style="margin-bottom: 36px;">
+              <h2 class="checkout-section-title">3. Payment Selection</h2>
+              <div class="payment-options-box">
+                
+                <label class="payment-option-card is-selected" onclick="selectPayment(this)">
+                  <input type="radio" name="payment_method" value="upi" checked class="payment-radio">
+                  <div>
+                    <div style="font-weight: 600; font-size: 14px;">Instant UPI / QR / Cards / Net Banking</div>
+                    <div style="font-size: 12px; color: rgba(33, 27, 25, 0.7); margin-top: 2px;">Pay with Google Pay, PhonePe, Paytm, BHIM, or Cards.</div>
+                  </div>
+                </label>
+
+                <label class="payment-option-card" onclick="selectPayment(this)">
+                  <input type="radio" name="payment_method" value="cod" class="payment-radio">
+                  <div>
+                    <div style="font-weight: 600; font-size: 14px;">Cash on Delivery (COD)</div>
+                    <div style="font-size: 12px; color: rgba(33, 27, 25, 0.7); margin-top: 2px;">Pay upon delivery at your doorstep across India.</div>
+                  </div>
+                </label>
+
+                <label class="payment-option-card" onclick="selectPayment(this)">
+                  <input type="radio" name="payment_method" value="whatsapp" class="payment-radio">
+                  <div>
+                    <div style="font-weight: 600; font-size: 14px;">Direct WhatsApp Concierge Order</div>
+                    <div style="font-size: 12px; color: rgba(33, 27, 25, 0.7); margin-top: 2px;">Confirm your order directly with the JATAYU team on WhatsApp.</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Complete CTA -->
+            <button type="submit" id="PlaceOrderBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 18px 24px; font-size: 15px;">
+              Complete Order • <span id="BtnTotalPrice">₹0</span>
+            </button>
+            <p style="text-align: center; font-size: 12px; color: rgba(33, 27, 25, 0.6); margin-top: 12px;">
+              By completing this order, you confirm acceptance of JATAYU's privacy terms and heritage standards.
+            </p>
+          </form>
+        </div>
+
+        <!-- Right: Order Summary Sidebar -->
+        <div>
+          <div class="order-summary-card">
+            <h3 style="font-family: var(--font-editorial); font-size: 20px; color: var(--color-maroon-primary); margin-bottom: 16px;">
+              Order Summary
+            </h3>
+
+            <div id="SummaryItemsContainer">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div style="border-top: 1px solid var(--color-border-subtle); margin-top: 20px; padding-top: 16px; display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
+              <div style="display: flex; justify-content: space-between;">
+                <span>Subtotal</span>
+                <span id="SummarySubtotal">₹0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span>Express Shipping</span>
+                <span style="color: var(--color-maroon-primary); font-weight: 600;">FREE</span>
+              </div>
+              <div style="border-top: 2px solid var(--color-maroon-primary); padding-top: 14px; margin-top: 6px; display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; color: var(--color-maroon-primary);">
+                <span>Total Due</span>
+                <span id="SummaryTotal">₹0</span>
+              </div>
+            </div>
+
+            <!-- Trust badges -->
+            <div style="margin-top: 28px; padding-top: 20px; border-top: 1px dashed var(--color-border-subtle); font-size: 12px; color: rgba(33, 27, 25, 0.7); display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>✓</span> 100% Ultra-Heavyweight Combed Cotton
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>✓</span> Handcrafted Heritage Quality Guarantee
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>✓</span> Easy 7-Day Unworn Exchange Policy
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Order Confirmation Modal -->
+    <div class="confirmation-modal" id="ConfirmationModal">
+      <div class="confirmation-card">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--color-maroon-primary); color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px;">
+          ✓
+        </div>
+        <span class="label-eyebrow">ORDER CONFIRMED</span>
+        <h2 style="font-family: var(--font-editorial); font-size: 32px; color: var(--color-maroon-primary); margin: 8px 0 16px;">
+          Your Legacy is Secured.
+        </h2>
+        <p style="font-size: 15px; color: rgba(33, 27, 25, 0.8); line-height: 1.6; margin-bottom: 24px;">
+          Thank you, <span id="ConfirmCustomerName" style="font-weight: 600;">Patron</span>. Your order <strong id="ConfirmOrderId" style="color: var(--color-maroon-primary);">#JATAYU-8429</strong> has been recorded in the chronicle. A confirmation email and tracking link will be sent to <span id="ConfirmCustomerEmail" style="font-weight: 600;"></span>.
+        </p>
+
+        <div style="background: var(--color-ivory-parchment); border: 1px solid var(--color-border-sand); padding: 16px; border-radius: 4px; margin-bottom: 24px; font-size: 13px; text-align: left;">
+          <div><strong>Delivery To:</strong> <span id="ConfirmCustomerAddress"></span></div>
+          <div style="margin-top: 6px;"><strong>Payment:</strong> <span id="ConfirmPaymentMethod"></span></div>
+          <div style="margin-top: 6px;"><strong>Estimated Arrival:</strong> 3–5 Business Days (Express)</div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <a id="WhatsAppShareLink" href="#" target="_blank" class="btn btn-secondary" style="justify-content: center;">
+            Track / Confirm on WhatsApp
+          </a>
+          <a href="/" class="btn btn-primary" style="justify-content: center;">
+            Return to Sanctuary Home
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let cartData = { items: [], total_price: 0 };
+
+      // Initialize cart from localStorage or default items
+      function loadCart() {
+        const saved = localStorage.getItem('jatayu_cart');
+        if (saved) {
+          try {
+            cartData = JSON.parse(saved);
+          } catch(e) {}
+        }
+        
+        // If empty, supply default garment for smooth checkout experience
+        if (!cartData.items || cartData.items.length === 0) {
+          cartData = {
+            item_count: 1,
+            total_price: 249900,
+            items: [
+              {
+                id: 101,
+                title: "The Jatayu Sovereign Oversized Tee",
+                variant_title: "Vintage Charcoal / L",
+                price: 249900,
+                quantity: 1,
+                image: "/assets/product-tee-charcoal-front.jpg"
+              }
+            ]
+          };
+          localStorage.setItem('jatayu_cart', JSON.stringify(cartData));
+        }
+
+        renderSummary();
+      }
+
+      function formatMoney(cents) {
+        return '₹' + Math.round(cents / 100).toLocaleString('en-IN');
+      }
+
+      function renderSummary() {
+        const container = document.getElementById('SummaryItemsContainer');
+        const formattedTotal = formatMoney(cartData.total_price);
+        
+        document.getElementById('SummarySubtotal').textContent = formattedTotal;
+        document.getElementById('SummaryTotal').textContent = formattedTotal;
+        document.getElementById('BtnTotalPrice').textContent = formattedTotal;
+
+        container.innerHTML = cartData.items.map(item => `
+          <div class="order-summary-item">
+            <img src="${item.image || '/assets/jatayu-logo.jpg'}" alt="${item.title}" class="order-summary-item-img">
+            <div style="flex: 1;">
+              <div style="font-weight: 600; font-size: 14px;">${item.title}</div>
+              <div style="font-size: 12px; color: rgba(33, 27, 25, 0.7);">${item.variant_title || 'Standard'}</div>
+              <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 13px;">
+                <span>Qty: ${item.quantity}</span>
+                <span style="font-weight: 600;">${formatMoney(item.price * item.quantity)}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function selectPayment(card) {
+        document.querySelectorAll('.payment-option-card').forEach(c => c.classList.remove('is-selected'));
+        card.classList.add('is-selected');
+        card.querySelector('input[type="radio"]').checked = true;
+      }
+
+      function handlePlaceOrder(e) {
+        e.preventDefault();
+        
+        const fname = document.getElementById('checkout-fname').value;
+        const lname = document.getElementById('checkout-lname').value;
+        const email = document.getElementById('checkout-email').value;
+        const phone = document.getElementById('checkout-phone').value;
+        const address = document.getElementById('checkout-address').value;
+        const city = document.getElementById('checkout-city').value;
+        const state = document.getElementById('checkout-state').value;
+        const pincode = document.getElementById('checkout-pincode').value;
+        const payment = document.querySelector('input[name="payment_method"]:checked').value;
+
+        const orderId = 'JATAYU-' + Math.floor(10000 + Math.random() * 90000);
+        const paymentLabel = payment === 'upi' ? 'UPI / Online' : (payment === 'cod' ? 'Cash on Delivery' : 'WhatsApp Concierge');
+
+        document.getElementById('ConfirmCustomerName').textContent = fname + ' ' + lname;
+        document.getElementById('ConfirmCustomerEmail').textContent = email;
+        document.getElementById('ConfirmOrderId').textContent = '#' + orderId;
+        document.getElementById('ConfirmCustomerAddress').textContent = `${address}, ${city}, ${state} - ${pincode}`;
+        document.getElementById('ConfirmPaymentMethod').textContent = paymentLabel;
+
+        // Prepare WhatsApp order link
+        const itemNames = cartData.items.map(i => `${i.title} (${i.variant_title || 'Standard'}) x${i.quantity}`).join(', ');
+        const waText = encodeURIComponent(`Hi JATAYU, I just placed an order!\nOrder ID: #${orderId}\nName: ${fname} ${lname}\nItems: ${itemNames}\nTotal: ${formatMoney(cartData.total_price)}\nAddress: ${address}, ${city}, ${pincode}\nPayment: ${paymentLabel}`);
+        document.getElementById('WhatsAppShareLink').href = `https://wa.me/919999999999?text=${waText}`;
+
+        // Clear Cart
+        localStorage.removeItem('jatayu_cart');
+
+        // Show Modal
+        const modal = document.getElementById('ConfirmationModal');
+        modal.style.display = 'flex';
+      }
+
+      document.addEventListener('DOMContentLoaded', loadCart);
+    </script>
+  </body>
+</html>
