@@ -89,14 +89,14 @@
       gsap.to(heroWrapper, {
         scrollTrigger: {
           trigger: heroSection,
-          start: 'top top',
+          start: 'top 80px',
           end: 'bottom top',
           scrub: 0.8,
           pin: false
         },
-        scale: 0.92,
-        borderRadius: '24px',
-        boxShadow: '0 20px 60px rgba(33, 27, 25, 0.25)',
+        scale: 0.95,
+        borderRadius: '20px',
+        boxShadow: '0 24px 60px rgba(33, 27, 25, 0.2)',
         ease: 'power2.out'
       });
 
