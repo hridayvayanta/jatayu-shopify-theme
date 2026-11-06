@@ -13,6 +13,9 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/assets/theme.css">
+    
+    <!-- Razorpay Standard Checkout SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
       .checkout-body {
         background-color: var(--color-ivory-warm);
@@ -419,6 +422,9 @@
         card.querySelector('input[type="radio"]').checked = true;
       }
 
+      // Set your Razorpay Key ID here (e.g. 'rzp_live_...' or 'rzp_test_...')
+      window.RAZORPAY_KEY_ID = window.RAZORPAY_KEY_ID || 'rzp_test_1DP5mmOlF5G5ag';
+
       function handlePlaceOrder(e) {
         e.preventDefault();
         
@@ -433,25 +439,74 @@
         const payment = document.querySelector('input[name="payment_method"]:checked').value;
 
         const orderId = 'JATAYU-' + Math.floor(10000 + Math.random() * 90000);
-        const paymentLabel = payment === 'upi' ? 'UPI / Online' : (payment === 'cod' ? 'Cash on Delivery' : 'WhatsApp Concierge');
 
-        document.getElementById('ConfirmCustomerName').textContent = fname + ' ' + lname;
-        document.getElementById('ConfirmCustomerEmail').textContent = email;
-        document.getElementById('ConfirmOrderId').textContent = '#' + orderId;
-        document.getElementById('ConfirmCustomerAddress').textContent = `${address}, ${city}, ${state} - ${pincode}`;
-        document.getElementById('ConfirmPaymentMethod').textContent = paymentLabel;
+        function showOrderSuccess(paymentId = null) {
+          const paymentLabel = payment === 'upi' 
+            ? (paymentId ? `Prepaid Online (Txn #${paymentId})` : 'Prepaid Online (UPI / Card)') 
+            : (payment === 'cod' ? 'Cash on Delivery' : 'WhatsApp Concierge');
 
-        // Prepare WhatsApp order link
-        const itemNames = cartData.items.map(i => `${i.title} (${i.variant_title || 'Standard'}) x${i.quantity}`).join(', ');
-        const waText = encodeURIComponent(`Hi JATAYU, I just placed an order!\nOrder ID: #${orderId}\nName: ${fname} ${lname}\nItems: ${itemNames}\nTotal: ${formatMoney(cartData.total_price)}\nAddress: ${address}, ${city}, ${pincode}\nPayment: ${paymentLabel}`);
-        document.getElementById('WhatsAppShareLink').href = `https://wa.me/919999999999?text=${waText}`;
+          document.getElementById('ConfirmCustomerName').textContent = fname + ' ' + lname;
+          document.getElementById('ConfirmCustomerEmail').textContent = email;
+          document.getElementById('ConfirmOrderId').textContent = '#' + orderId;
+          document.getElementById('ConfirmCustomerAddress').textContent = `${address}, ${city}, ${state} - ${pincode}`;
+          document.getElementById('ConfirmPaymentMethod').textContent = paymentLabel;
 
-        // Clear Cart
-        localStorage.removeItem('jatayu_cart');
+          // Prepare WhatsApp order notification
+          const itemNames = cartData.items.map(i => `${i.title} (${i.variant_title || 'Standard'}) x${i.quantity}`).join(', ');
+          const waText = encodeURIComponent(`Hi JATAYU, I just placed an order!\nOrder ID: #${orderId}\nName: ${fname} ${lname}\nItems: ${itemNames}\nTotal: ${formatMoney(cartData.total_price)}\nAddress: ${address}, ${city}, ${pincode}\nPayment: ${paymentLabel}`);
+          document.getElementById('WhatsAppShareLink').href = `https://wa.me/919999999999?text=${waText}`;
 
-        // Show Modal
-        const modal = document.getElementById('ConfirmationModal');
-        modal.style.display = 'flex';
+          // Clear Cart
+          localStorage.removeItem('jatayu_cart');
+
+          // Show Confirmation Modal
+          const modal = document.getElementById('ConfirmationModal');
+          modal.style.display = 'flex';
+        }
+
+        // If Online Payment (UPI / Cards / NetBanking)
+        if (payment === 'upi') {
+          if (typeof Razorpay !== 'undefined' && window.RAZORPAY_KEY_ID) {
+            const options = {
+              key: window.RAZORPAY_KEY_ID,
+              amount: cartData.total_price, // Amount in paise
+              currency: 'INR',
+              name: 'JATAYU (जटायु)',
+              description: 'Official Luxury Garment Order #' + orderId,
+              image: '/assets/jatayu-logo.jpg',
+              prefill: {
+                name: fname + ' ' + lname,
+                email: email,
+                contact: phone
+              },
+              theme: {
+                color: '#740101' // JATAYU Deep Maroon
+              },
+              modal: {
+                ondismiss: function() {
+                  console.log('Payment modal closed');
+                }
+              },
+              handler: function (response) {
+                // Payment succeeded!
+                showOrderSuccess(response.razorpay_payment_id);
+              }
+            };
+            try {
+              const rzp = new Razorpay(options);
+              rzp.on('payment.failed', function (response) {
+                alert('Payment was not completed: ' + (response.error.description || 'Please try another method.'));
+              });
+              rzp.open();
+              return;
+            } catch(err) {
+              console.warn('Razorpay checkout fallback', err);
+            }
+          }
+        }
+
+        // Cash on Delivery or WhatsApp
+        showOrderSuccess();
       }
 
       document.addEventListener('DOMContentLoaded', loadCart);
