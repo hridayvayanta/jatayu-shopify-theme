@@ -8,7 +8,7 @@
 
   // Config: Enter your Supabase Project details here or via /admin settings
   const SUPABASE_CONFIG = {
-    url: window.SUPABASE_URL || localStorage.getItem('jatayu_supabase_url') || '',
+    url: window.SUPABASE_URL || localStorage.getItem('jatayu_supabase_url') || 'https://uxtdhpienmypseirmmvc.supabase.co',
     anonKey: window.SUPABASE_KEY || localStorage.getItem('jatayu_supabase_key') || ''
   };
 
