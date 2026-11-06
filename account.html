@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Sanctuary Account | JATAYU (जटायु)</title>
+    <link rel="icon" type="image/jpeg" href="/assets/jatayu-logo.jpg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="/assets/theme.css">
+    <style>
+      .account-page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--color-ivory-warm);
+      }
+      .account-header-card {
+        background: var(--color-ivory-parchment);
+        border: 1px solid var(--color-border-sand);
+        border-radius: 6px;
+        padding: clamp(24px, 4vw, 36px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .account-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--color-maroon-primary);
+      }
+      .account-avatar-placeholder {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: var(--color-maroon-primary);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: 600;
+        font-family: var(--font-editorial);
+      }
+      .account-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 40px;
+        margin-bottom: 80px;
+      }
+      @media (max-width: 860px) {
+        .account-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .account-card {
+        background: var(--color-ivory-parchment);
+        border: 1px solid var(--color-border-sand);
+        border-radius: 6px;
+        padding: 28px;
+      }
+      .order-row {
+        padding: 16px 0;
+        border-bottom: 1px solid var(--color-border-subtle);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body class="account-page">
+
+    <!-- Top Announcement Bar -->
+    <div class="announcement-bar">
+      <div class="page-width">
+        <span>COMPLIMENTARY EXPRESS SHIPPING ACROSS INDIA ON ALL ORDERS</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header scrolled">
+      <div class="header-container">
+        <nav class="header-nav-left">
+          <a href="/collections" class="nav-link">Shop</a>
+          <a href="/collections" class="nav-link">Collections</a>
+          <a href="/pages/our-story" class="nav-link">Our Story</a>
+        </nav>
+
+        <div class="header-logo-center">
+          <a href="/" class="header-logo-link">
+            <img src="/assets/jatayu-logo-transparent.png" onerror="this.onerror=null; this.src='/assets/jatayu-logo.jpg';" alt="JATAYU" class="header-logo-img" width="160" height="52">
+          </a>
+        </div>
+
+        <div class="header-actions-right">
+          <a href="/account" class="header-action-btn" aria-label="Account" style="color: var(--color-maroon-primary);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </a>
+          <a href="/checkout" class="header-action-btn" aria-label="Shopping Bag">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-width" style="padding-top: 40px;">
+      
+      <!-- User Profile Banner -->
+      <div class="account-header-card">
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <div id="UserAvatarContainer"></div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="label-eyebrow" style="margin: 0;">SANCTUARY PATRON</span>
+              <span id="UserProviderBadge" style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: rgba(116, 1, 1, 0.08); color: var(--color-maroon-primary); font-weight: 600;">Google</span>
+            </div>
+            <h1 id="UserName" style="font-family: var(--font-editorial); font-size: 32px; color: var(--color-maroon-primary); margin: 4px 0;">
+              Welcome
+            </h1>
+            <p id="UserEmail" style="font-size: 14px; color: rgba(33, 27, 25, 0.7);"></p>
+          </div>
+        </div>
+
+        <div>
+          <button type="button" onclick="handleSignOut();" class="btn btn-secondary" style="padding: 10px 22px; font-size: 12px;">
+            Sign Out
+          </button>
+        </div>
+      </div>
+
+      <!-- Account Content Grid -->
+      <div class="account-grid">
+        
+        <!-- Order Chronicle -->
+        <div>
+          <h2 style="font-family: var(--font-editorial); font-size: 26px; color: var(--color-maroon-primary); margin-bottom: 20px;">
+            Order Chronicle
+          </h2>
+
+          <div class="account-card" id="OrderListContainer">
+            <div class="order-row">
+              <div>
+                <div style="font-weight: 600; color: var(--color-maroon-primary);">#JATAYU-8429</div>
+                <div style="font-size: 13px; color: var(--color-text-body); margin-top: 2px;">The Jatayu Sovereign Oversized Tee (Charcoal / L)</div>
+                <div style="font-size: 12px; color: rgba(33, 27, 25, 0.6); margin-top: 4px;">Placed Nov 6, 2026 • Complimentary Express Delivery</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-weight: 700; color: var(--color-text-body);">₹2,499</div>
+                <span style="display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 2px; background: rgba(116, 1, 1, 0.1); color: var(--color-maroon-primary); font-weight: 600; margin-top: 4px;">
+                  Dispatched
+                </span>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--color-border-subtle);">
+              <a href="/collections" class="btn-text-arrow">
+                <span>Explore New Arrivals</span>
+                &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sanctuary Privileges & Delivery Address -->
+        <div>
+          <h2 style="font-family: var(--font-editorial); font-size: 26px; color: var(--color-maroon-primary); margin-bottom: 20px;">
+            Sanctuary Details
+          </h2>
+
+          <div class="account-card">
+            <h3 style="font-family: var(--font-editorial); font-size: 18px; color: var(--color-maroon-primary); margin-bottom: 12px;">
+              Primary Delivery Destination
+            </h3>
+            <div style="font-size: 14px; line-height: 1.6; color: var(--color-text-body); margin-bottom: 20px;">
+              <p id="AddressName" style="font-weight: 600;">Sanctuary Member</p>
+              <p>Complimentary Express Shipping across India</p>
+              <p>Standard delivery within 3–5 business days</p>
+            </div>
+
+            <a href="/checkout" class="btn btn-secondary" style="width: 100%; justify-content: center; font-size: 12px;">
+              Update Delivery Information
+            </a>
+
+            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--color-border-subtle); font-size: 12px; color: rgba(33, 27, 25, 0.7); display: flex; flex-direction: column; gap: 6px;">
+              <div>✦ Private Access to New Chapter Drops</div>
+              <div>✦ Priority Craft Fulfillment</div>
+              <div>✦ Dedicated WhatsApp Concierge Support</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer" style="margin-top: auto;">
+      <div class="page-width">
+        <div class="footer-bottom">
+          <div>&copy; 2026 JATAYU. All rights reserved.</div>
+          <div style="display: flex; gap: 20px;">
+            <a href="/pages/our-story" class="footer-link">Our Story</a>
+            <a href="/pages/contact" class="footer-link">Contact</a>
+            <a href="/pages/faq" class="footer-link">FAQ</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Check auth status
+      const savedUser = localStorage.getItem('jatayu_user');
+      if (!savedUser) {
+        window.location.href = '/login';
+      } else {
+        const user = JSON.parse(savedUser);
+        document.getElementById('UserName').textContent = user.name || 'Patron';
+        document.getElementById('UserEmail').textContent = user.email || '';
+        document.getElementById('AddressName').textContent = user.name || 'Sanctuary Member';
+        document.getElementById('UserProviderBadge').textContent = user.provider || 'Google';
+
+        const avatarContainer = document.getElementById('UserAvatarContainer');
+        if (user.picture) {
+          avatarContainer.innerHTML = `<img src="${user.picture}" alt="${user.name}" class="account-avatar">`;
+        } else {
+          const initial = (user.name || 'P').charAt(0).toUpperCase();
+          avatarContainer.innerHTML = `<div class="account-avatar-placeholder">${initial}</div>`;
+        }
+      }
+
+      function handleSignOut() {
+        localStorage.removeItem('jatayu_user');
+        window.location.href = '/login';
+      }
+    </script>
+  </body>
+</html>

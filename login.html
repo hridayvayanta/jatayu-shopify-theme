@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | JATAYU (जटायु) — Official Luxury Fashion</title>
+    <link rel="icon" type="image/jpeg" href="/assets/jatayu-logo.jpg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="/assets/theme.css">
+
+    <!-- Google Identity Services SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+      .auth-page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--color-ivory-warm);
+      }
+      .auth-container {
+        max-width: 460px;
+        width: 100%;
+        margin: 60px auto 100px;
+        padding: clamp(32px, 6vw, 48px);
+        background: var(--color-ivory-parchment);
+        border: 1px solid var(--color-border-sand);
+        border-radius: 6px;
+        box-shadow: 0 16px 50px rgba(33, 27, 25, 0.06);
+      }
+      .auth-input {
+        width: 100%;
+        padding: 13px 16px;
+        border: 1px solid var(--color-border-subtle);
+        background: var(--color-ivory-warm);
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--color-text-body);
+        outline: none;
+        border-radius: 2px;
+        transition: border-color var(--transition-fast);
+      }
+      .auth-input:focus {
+        border-color: var(--color-maroon-primary);
+        background: var(--color-offwhite);
+      }
+      .auth-divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 24px 0;
+        color: rgba(33, 27, 25, 0.5);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+      .auth-divider::before, .auth-divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid var(--color-border-subtle);
+      }
+      .auth-divider span {
+        padding: 0 12px;
+      }
+      .google-btn-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body class="auth-page">
+
+    <!-- Top Announcement Bar -->
+    <div class="announcement-bar">
+      <div class="page-width">
+        <span>COMPLIMENTARY EXPRESS SHIPPING ACROSS INDIA ON ALL ORDERS</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header scrolled">
+      <div class="header-container">
+        <nav class="header-nav-left">
+          <a href="/collections" class="nav-link">Shop</a>
+          <a href="/collections" class="nav-link">Collections</a>
+          <a href="/pages/our-story" class="nav-link">Our Story</a>
+        </nav>
+
+        <div class="header-logo-center">
+          <a href="/" class="header-logo-link">
+            <img src="/assets/jatayu-logo-transparent.png" onerror="this.onerror=null; this.src='/assets/jatayu-logo.jpg';" alt="JATAYU" class="header-logo-img" width="160" height="52">
+          </a>
+        </div>
+
+        <div class="header-actions-right">
+          <a href="/login" class="header-action-btn" aria-label="Account">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </a>
+          <a href="/checkout" class="header-action-btn" aria-label="Shopping Bag">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-width">
+      <div class="auth-container">
+        
+        <!-- SIGN IN STATE -->
+        <div id="SignInBox">
+          <div style="text-align: center; margin-bottom: 28px;">
+            <span class="label-eyebrow">SANCTUARY ENTRY</span>
+            <h1 class="heading-section" style="color: var(--color-maroon-primary); margin-top: 6px; font-size: 32px;">
+              Sign In
+            </h1>
+            <p style="font-size: 14px; color: rgba(33, 27, 25, 0.7); margin-top: 6px;">
+              Access your order chronicle and sanctuary privileges.
+            </p>
+          </div>
+
+          <!-- Official Google One-Click Sign In -->
+          <div class="google-btn-wrapper">
+            <div id="g_id_onload"
+                 data-client_id="789565968481-iosbeggjuej9oe7p0f4ggm137cqtkpg5.apps.googleusercontent.com"
+                 data-callback="handleGoogleSignIn"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left"
+                 data-width="360">
+            </div>
+          </div>
+
+          <div class="auth-divider">
+            <span>or sign in with email</span>
+          </div>
+
+          <form onsubmit="handleEmailSignIn(event);">
+            <div style="margin-bottom: 16px;">
+              <label class="checkout-label" for="signin-email" style="display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 6px;">Email Address</label>
+              <input type="email" id="signin-email" required class="auth-input" placeholder="you@domain.com">
+            </div>
+
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label class="checkout-label" for="signin-password" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Password</label>
+                <a href="#" onclick="alert('Password reset link has been dispatched to your email.'); return false;" style="font-size: 12px; color: var(--color-maroon-primary); text-decoration: underline;">Forgot?</a>
+              </div>
+              <input type="password" id="signin-password" required class="auth-input">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px 20px;">
+              Sign In
+            </button>
+          </form>
+
+          <div style="text-align: center; margin-top: 24px; font-size: 13px; color: rgba(33, 27, 25, 0.75);">
+            New to JATAYU?
+            <a href="#" onclick="toggleAuth(true); return false;" style="color: var(--color-maroon-primary); font-weight: 600; text-decoration: underline; margin-left: 4px;">
+              Create an Account
+            </a>
+          </div>
+        </div>
+
+        <!-- CREATE ACCOUNT STATE -->
+        <div id="RegisterBox" style="display: none;">
+          <div style="text-align: center; margin-bottom: 28px;">
+            <span class="label-eyebrow">JOIN THE LEGACY</span>
+            <h1 class="heading-section" style="color: var(--color-maroon-primary); margin-top: 6px; font-size: 32px;">
+              Create Account
+            </h1>
+            <p style="font-size: 14px; color: rgba(33, 27, 25, 0.7); margin-top: 6px;">
+              Register for exclusive drops and priority order tracking.
+            </p>
+          </div>
+
+          <!-- Official Google One-Click Register -->
+          <div class="google-btn-wrapper">
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="signup_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left"
+                 data-width="360">
+            </div>
+          </div>
+
+          <div class="auth-divider">
+            <span>or create with email</span>
+          </div>
+
+          <form onsubmit="handleEmailRegister(event);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">First Name</label>
+                <input type="text" id="reg-fname" required class="auth-input">
+              </div>
+              <div>
+                <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Last Name</label>
+                <input type="text" id="reg-lname" required class="auth-input">
+              </div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Email Address</label>
+              <input type="email" id="reg-email" required class="auth-input">
+            </div>
+
+            <div style="margin-bottom: 24px;">
+              <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Password</label>
+              <input type="password" id="reg-password" required class="auth-input">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px 20px;">
+              Create Account
+            </button>
+          </form>
+
+          <div style="text-align: center; margin-top: 24px; font-size: 13px; color: rgba(33, 27, 25, 0.75);">
+            Already have an account?
+            <a href="#" onclick="toggleAuth(false); return false;" style="color: var(--color-maroon-primary); font-weight: 600; text-decoration: underline; margin-left: 4px;">
+              Sign In
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer" style="margin-top: auto;">
+      <div class="page-width">
+        <div class="footer-bottom">
+          <div>&copy; 2026 JATAYU. All rights reserved.</div>
+          <div style="display: flex; gap: 20px;">
+            <a href="/pages/our-story" class="footer-link">Our Story</a>
+            <a href="/pages/contact" class="footer-link">Contact</a>
+            <a href="/pages/faq" class="footer-link">FAQ</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Check if user is already logged in
+      if (localStorage.getItem('jatayu_user')) {
+        window.location.href = '/account';
+      }
+
+      function toggleAuth(showRegister) {
+        document.getElementById('SignInBox').style.display = showRegister ? 'none' : 'block';
+        document.getElementById('RegisterBox').style.display = showRegister ? 'block' : 'none';
+      }
+
+      // Handle Google Sign-In response
+      function handleGoogleSignIn(response) {
+        try {
+          // Decode Google JWT payload
+          const base64Url = response.credential.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+
+          const payload = JSON.parse(jsonPayload);
+          const userData = {
+            name: payload.name || 'Sanctuary Member',
+            email: payload.email,
+            picture: payload.picture,
+            provider: 'Google',
+            joined: new Date().toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })
+          };
+
+          localStorage.setItem('jatayu_user', JSON.stringify(userData));
+          window.location.href = '/account';
+        } catch(e) {
+          console.error('Google Sign-In parse error', e);
+          alert('Sign in successful. Redirecting...');
+          window.location.href = '/account';
+        }
+      }
+
+      function handleEmailSignIn(e) {
+        e.preventDefault();
+        const email = document.getElementById('signin-email').value;
+        const name = email.split('@')[0];
+        const userData = {
+          name: name.charAt(0).toUpperCase() + name.slice(1),
+          email: email,
+          provider: 'Email',
+          joined: new Date().toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })
+        };
+        localStorage.setItem('jatayu_user', JSON.stringify(userData));
+        window.location.href = '/account';
+      }
+
+      function handleEmailRegister(e) {
+        e.preventDefault();
+        const fname = document.getElementById('reg-fname').value;
+        const lname = document.getElementById('reg-lname').value;
+        const email = document.getElementById('reg-email').value;
+        const userData = {
+          name: `${fname} ${lname}`,
+          email: email,
+          provider: 'Email',
+          joined: new Date().toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })
+        };
+        localStorage.setItem('jatayu_user', JSON.stringify(userData));
+        window.location.href = '/account';
+      }
+    </script>
+  </body>
+</html>

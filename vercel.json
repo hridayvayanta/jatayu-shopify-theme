@@ -1,6 +1,8 @@
 {
   "trailingSlash": false,
   "rewrites": [
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/account", "destination": "/account.html" },
     { "source": "/collections", "destination": "/collection.html" },
     { "source": "/checkout", "destination": "/checkout.html" },
     { "source": "/pages/our-story", "destination": "/story.html" },

@@ -132,6 +132,10 @@ const server = http.createServer((req, res) => {
   let filePath;
   if (pathname === '/' || pathname === '/index.html') {
     filePath = path.join(ROOT_DIR, 'index.html');
+  } else if (pathname === '/login' || pathname === '/login.html') {
+    filePath = path.join(ROOT_DIR, 'login.html');
+  } else if (pathname === '/account' || pathname === '/account.html') {
+    filePath = path.join(ROOT_DIR, 'account.html');
   } else if (pathname === '/checkout' || pathname === '/checkout.html') {
     filePath = path.join(ROOT_DIR, 'checkout.html');
   } else if (pathname.startsWith('/products/')) {

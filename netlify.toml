@@ -1,4 +1,14 @@
 [[redirects]]
+  from = "/login"
+  to = "/login.html"
+  status = 200
+
+[[redirects]]
+  from = "/account"
+  to = "/account.html"
+  status = 200
+
+[[redirects]]
   from = "/collections"
   to = "/collection.html"
   status = 200
