@@ -132,6 +132,8 @@ const server = http.createServer((req, res) => {
   let filePath;
   if (pathname === '/' || pathname === '/index.html') {
     filePath = path.join(ROOT_DIR, 'index.html');
+  } else if (pathname === '/admin' || pathname === '/admin.html') {
+    filePath = path.join(ROOT_DIR, 'admin.html');
   } else if (pathname === '/login' || pathname === '/login.html') {
     filePath = path.join(ROOT_DIR, 'login.html');
   } else if (pathname === '/account' || pathname === '/account.html') {

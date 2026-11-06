@@ -355,6 +355,10 @@
       </div>
     </div>
 
+    <!-- Supabase & Catalog Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/assets/catalog.js"></script>
+
     <script>
       let cartData = { items: [], total_price: 0 };
 
@@ -455,6 +459,24 @@
           const itemNames = cartData.items.map(i => `${i.title} (${i.variant_title || 'Standard'}) x${i.quantity}`).join(', ');
           const waText = encodeURIComponent(`Hi JATAYU, I just placed an order!\nOrder ID: #${orderId}\nName: ${fname} ${lname}\nItems: ${itemNames}\nTotal: ${formatMoney(cartData.total_price)}\nAddress: ${address}, ${city}, ${pincode}\nPayment: ${paymentLabel}`);
           document.getElementById('WhatsAppShareLink').href = `https://wa.me/919999999999?text=${waText}`;
+
+          // Save Order to Supabase Chronicle
+          if (window.JatayuCatalog) {
+            window.JatayuCatalog.saveOrder({
+              id: orderId,
+              customer_name: fname + ' ' + lname,
+              customer_email: email,
+              customer_phone: phone,
+              delivery_address: `${address}, ${city}, ${state} - ${pincode}`,
+              city: city,
+              pincode: pincode,
+              total_price: Math.round(cartData.total_price / 100),
+              payment_method: paymentLabel,
+              payment_id: paymentId || 'COD',
+              items: itemNames,
+              status: 'Received'
+            });
+          }
 
           // Clear Cart
           localStorage.removeItem('jatayu_cart');

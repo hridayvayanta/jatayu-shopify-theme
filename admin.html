@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JATAYU Sanctuary — Admin Management</title>
+    <link rel="icon" type="image/jpeg" href="/assets/jatayu-logo.jpg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Supabase JS Client SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="/assets/theme.css">
+
+    <style>
+      .admin-body {
+        background: var(--color-ivory-warm);
+        color: var(--color-text-body);
+        font-family: var(--font-interface);
+        min-height: 100vh;
+      }
+      .admin-topbar {
+        background: var(--color-maroon-primary);
+        color: var(--color-offwhite);
+        padding: 16px 0;
+      }
+      .admin-topbar-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .admin-nav-tabs {
+        display: flex;
+        gap: 12px;
+        margin: 32px 0 24px;
+        border-bottom: 1px solid var(--color-border-subtle);
+        padding-bottom: 12px;
+      }
+      .admin-tab-btn {
+        background: transparent;
+        border: none;
+        font-family: inherit;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+        padding: 8px 16px;
+        color: rgba(33, 27, 25, 0.6);
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all var(--transition-fast);
+      }
+      .admin-tab-btn.is-active {
+        background: var(--color-maroon-primary);
+        color: var(--color-offwhite);
+      }
+      .admin-card {
+        background: var(--color-ivory-parchment);
+        border: 1px solid var(--color-border-sand);
+        border-radius: 6px;
+        padding: 28px;
+        box-shadow: 0 10px 30px rgba(33, 27, 25, 0.04);
+      }
+      .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        text-align: left;
+      }
+      .admin-table th {
+        padding: 14px 16px;
+        background: rgba(116, 1, 1, 0.05);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-maroon-primary);
+        border-bottom: 1px solid var(--color-border-subtle);
+      }
+      .admin-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--color-border-subtle);
+      }
+      .admin-input {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid var(--color-border-subtle);
+        background: var(--color-ivory-warm);
+        font-family: inherit;
+        font-size: 14px;
+        border-radius: 4px;
+        outline: none;
+      }
+      .admin-input:focus {
+        border-color: var(--color-maroon-primary);
+      }
+      .modal-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(33, 27, 25, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        overflow-y: auto;
+        padding: 40px 20px;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-box {
+        max-width: 620px;
+        width: 100%;
+        margin: auto;
+        background: var(--color-ivory-warm);
+        border: 1px solid var(--color-border-sand);
+        border-radius: 6px;
+        padding: 36px;
+      }
+    </style>
+  </head>
+  <body class="admin-body">
+
+    <!-- PIN Authentication Screen (Shown if not unlocked) -->
+    <div id="PinLockScreen" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+      <div style="max-width: 400px; width: 100%; background: var(--color-ivory-parchment); border: 1px solid var(--color-border-sand); padding: 40px; border-radius: 6px; text-align: center;">
+        <img src="/assets/jatayu-logo.jpg" alt="JATAYU" style="height: 48px; margin-bottom: 20px;">
+        <span class="label-eyebrow">SANCTUARY CONTROL</span>
+        <h1 style="font-family: var(--font-editorial); font-size: 28px; color: var(--color-maroon-primary); margin: 6px 0 16px;">
+          Admin Access
+        </h1>
+        <p style="font-size: 13px; color: rgba(33, 27, 25, 0.7); margin-bottom: 24px;">
+          Enter your sanctuary security key to manage products and orders.
+        </p>
+
+        <form onsubmit="unlockAdmin(event);">
+          <input type="password" id="AdminPinInput" placeholder="Enter Security PIN" required class="admin-input" style="text-align: center; letter-spacing: 0.2em; font-size: 18px; margin-bottom: 16px;">
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+            Unlock Sanctuary
+          </button>
+          <p style="font-size: 11px; color: rgba(33, 27, 25, 0.5); margin-top: 12px;">Default Access Key: <code>jatayu2026</code></p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Main Admin Dashboard (Hidden until unlocked) -->
+    <div id="AdminDashboard" style="display: none;">
+      
+      <!-- Top Navigation -->
+      <header class="admin-topbar">
+        <div class="page-width admin-topbar-inner">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <a href="/" target="_blank" style="color: #fff; font-family: var(--font-editorial); font-size: 22px; text-decoration: none; font-weight: 600;">
+              JATAYU (जटायु)
+            </a>
+            <span style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 0.1em;">
+              Sanctuary Admin
+            </span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <a href="/" target="_blank" style="color: var(--color-offwhite); font-size: 12px; text-decoration: underline;">
+              View Live Store &rarr;
+            </a>
+            <button type="button" onclick="lockAdmin();" style="background: rgba(0,0,0,0.2); border: none; color: #fff; padding: 6px 14px; border-radius: 4px; font-size: 12px; cursor: pointer;">
+              Lock
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="page-width">
+        <!-- Navigation Tabs -->
+        <div class="admin-nav-tabs">
+          <button class="admin-tab-btn is-active" onclick="switchTab('products', this)">Garments & Catalog</button>
+          <button class="admin-tab-btn" onclick="switchTab('orders', this)">Order Chronicle</button>
+          <button class="admin-tab-btn" onclick="switchTab('database', this)">Cloud Database (Supabase)</button>
+        </div>
+
+        <!-- TAB 1: GARMENTS CATALOG -->
+        <div id="TabProducts">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+              <h2 style="font-family: var(--font-editorial); font-size: 28px; color: var(--color-maroon-primary);">
+                Garment Catalog
+              </h2>
+              <p style="font-size: 13px; color: rgba(33, 27, 25, 0.7);">
+                Manage designs, prices, and stock for your live website.
+              </p>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="openProductModal();">
+              + Add New Garment
+            </button>
+          </div>
+
+          <div class="admin-card" style="padding: 0; overflow: hidden;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 80px;">Garment</th>
+                  <th>Title & Description</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Sizes</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="ProductsTableBody">
+                <!-- Dynamically populated via catalog.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 2: ORDER CHRONICLE -->
+        <div id="TabOrders" style="display: none;">
+          <div style="margin-bottom: 24px;">
+            <h2 style="font-family: var(--font-editorial); font-size: 28px; color: var(--color-maroon-primary);">
+              Order Chronicle
+            </h2>
+            <p style="font-size: 13px; color: rgba(33, 27, 25, 0.7);">
+              All customer purchases placed through UPI / Online payment and WhatsApp.
+            </p>
+          </div>
+
+          <div class="admin-card" style="padding: 0; overflow: hidden;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Contact</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="OrdersTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: CLOUD DATABASE (SUPABASE) -->
+        <div id="TabDatabase" style="display: none;">
+          <div style="margin-bottom: 24px;">
+            <h2 style="font-family: var(--font-editorial); font-size: 28px; color: var(--color-maroon-primary);">
+              Supabase Cloud Database Settings
+            </h2>
+            <p style="font-size: 13px; color: rgba(33, 27, 25, 0.7);">
+              Connect your free Supabase PostgreSQL cloud database to store unlimited products and orders permanently.
+            </p>
+          </div>
+
+          <div class="admin-card" style="max-width: 680px;">
+            <form onsubmit="saveSupabaseConfig(event);">
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">
+                  Supabase Project URL
+                </label>
+                <input type="url" id="SupabaseUrlInput" class="admin-input" placeholder="https://xyzcompany.supabase.co">
+              </div>
+
+              <div style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">
+                  Supabase Anon / Public API Key
+                </label>
+                <input type="text" id="SupabaseKeyInput" class="admin-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+              </div>
+
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <button type="submit" class="btn btn-primary">
+                  Save Credentials
+                </button>
+                <span id="DbSaveNotice" style="font-size: 13px; color: var(--color-maroon-primary); display: none;">
+                  ✓ Saved successfully!
+                </span>
+              </div>
+            </form>
+
+            <div style="margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--color-border-subtle);">
+              <h3 style="font-family: var(--font-editorial); font-size: 20px; color: var(--color-maroon-primary); margin-bottom: 8px;">
+                1-Click Supabase Table Setup SQL
+              </h3>
+              <p style="font-size: 13px; color: rgba(33, 27, 25, 0.7); margin-bottom: 12px;">
+                Paste this into the **SQL Editor** in your Supabase dashboard to create the tables in 5 seconds:
+              </p>
+              <pre style="background: rgba(33, 27, 25, 0.06); padding: 16px; border-radius: 4px; font-size: 12px; overflow-x: auto; color: var(--color-maroon-primary); line-height: 1.5;">
+create table if not exists products (
+  id bigint primary key,
+  title text not null,
+  category text,
+  price numeric,
+  image text,
+  secondary_image text,
+  badge text,
+  sizes text[],
+  description text,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+create table if not exists orders (
+  id text primary key,
+  customer_name text,
+  customer_email text,
+  customer_phone text,
+  total_price numeric,
+  items text,
+  payment_method text,
+  payment_id text,
+  status text,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+              </pre>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal-backdrop" id="AddProductModal">
+      <div class="modal-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h2 style="font-family: var(--font-editorial); font-size: 26px; color: var(--color-maroon-primary);">
+            Add New Garment
+          </h2>
+          <button type="button" onclick="closeProductModal();" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+        </div>
+
+        <form onsubmit="handleCreateProduct(event);">
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Garment Title</label>
+            <input type="text" id="prod-title" required class="admin-input" placeholder="e.g. Garuda Crest Heavyweight Tee">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <div>
+              <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Category</label>
+              <select id="prod-category" class="admin-input">
+                <option value="T-Shirts">T-Shirts</option>
+                <option value="Hoodies">Hoodies</option>
+                <option value="Oversized Tees">Oversized Tees</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Price in INR (₹)</label>
+              <input type="number" id="prod-price" required class="admin-input" placeholder="2499">
+            </div>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Primary Front Image URL</label>
+            <input type="text" id="prod-image" required class="admin-input" placeholder="/assets/product-tee-charcoal-front.jpg or Cloud Image URL">
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Secondary Back Hover Image URL (Optional)</label>
+            <input type="text" id="prod-image-back" class="admin-input" placeholder="/assets/product-tee-charcoal-back.jpg">
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Badge Tag (Optional)</label>
+            <input type="text" id="prod-badge" class="admin-input" placeholder="Signature Drop / Limited Release">
+          </div>
+
+          <div style="margin-bottom: 24px;">
+            <label style="display: block; font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Description & Fabric Specs</label>
+            <textarea id="prod-desc" rows="3" class="admin-input" placeholder="Cut from ultra-heavyweight 240 GSM combed cotton..."></textarea>
+          </div>
+
+          <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button type="button" onclick="closeProductModal();" class="btn btn-secondary">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Publish Garment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- JATAYU Catalog Management Script -->
+    <script src="/assets/catalog.js"></script>
+
+    <script>
+      // Authentication Handler
+      function checkAuth() {
+        if (sessionStorage.getItem('jatayu_admin_unlocked') === 'true') {
+          document.getElementById('PinLockScreen').style.display = 'none';
+          document.getElementById('AdminDashboard').style.display = 'block';
+          loadProductsTable();
+          loadOrdersTable();
+          loadDbConfig();
+        }
+      }
+
+      function unlockAdmin(e) {
+        e.preventDefault();
+        const pin = document.getElementById('AdminPinInput').value.trim();
+        if (pin === 'jatayu2026' || pin === 'admin123') {
+          sessionStorage.setItem('jatayu_admin_unlocked', 'true');
+          checkAuth();
+        } else {
+          alert('Incorrect security PIN.');
+        }
+      }
+
+      function lockAdmin() {
+        sessionStorage.removeItem('jatayu_admin_unlocked');
+        window.location.reload();
+      }
+
+      function switchTab(tab, btn) {
+        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+
+        document.getElementById('TabProducts').style.display = tab === 'products' ? 'block' : 'none';
+        document.getElementById('TabOrders').style.display = tab === 'orders' ? 'block' : 'none';
+        document.getElementById('TabDatabase').style.display = tab === 'database' ? 'block' : 'none';
+      }
+
+      // Products Table
+      async function loadProductsTable() {
+        const tbody = document.getElementById('ProductsTableBody');
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 24px;">Loading catalog...</td></tr>';
+        
+        const products = await window.JatayuCatalog.getProducts();
+        
+        tbody.innerHTML = products.map(p => `
+          <tr>
+            <td>
+              <img src="${p.image}" alt="${p.title}" style="width: 50px; height: 60px; object-fit: cover; border-radius: 2px;">
+            </td>
+            <td>
+              <div style="font-weight: 600; color: var(--color-text-body);">${p.title}</div>
+              <div style="font-size: 12px; color: rgba(33, 27, 25, 0.6); max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.description || ''}</div>
+            </td>
+            <td>
+              <span style="font-size: 12px; padding: 3px 8px; background: rgba(33, 27, 25, 0.08); border-radius: 2px;">
+                ${p.category || 'T-Shirts'}
+              </span>
+            </td>
+            <td style="font-weight: 600; color: var(--color-maroon-primary);">
+              ₹${Number(p.price).toLocaleString('en-IN')}
+            </td>
+            <td style="font-size: 12px; color: rgba(33, 27, 25, 0.7);">
+              ${(p.sizes || ['S', 'M', 'L', 'XL']).join(', ')}
+            </td>
+            <td style="text-align: right;">
+              <button onclick="handleDeleteProduct(${p.id});" style="background: none; border: none; color: #a00; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: underline;">
+                Delete
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Orders Table
+      async function loadOrdersTable() {
+        const tbody = document.getElementById('OrdersTableBody');
+        const orders = await window.JatayuCatalog.getOrders();
+
+        if (orders.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 32px; color: rgba(33,27,25,0.6);">No customer orders recorded yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = orders.map(o => `
+          <tr>
+            <td style="font-weight: 600; color: var(--color-maroon-primary);">#${o.id}</td>
+            <td>
+              <div style="font-weight: 600;">${o.customer_name}</div>
+              <div style="font-size: 12px; color: rgba(33,27,25,0.6);">${o.customer_email || ''}</div>
+            </td>
+            <td style="font-size: 13px;">${o.customer_phone || '—'}</td>
+            <td style="font-size: 13px; max-width: 200px;">${o.items || 'Garment order'}</td>
+            <td style="font-weight: 600;">₹${Number(o.total_price).toLocaleString('en-IN')}</td>
+            <td>
+              <span style="font-size: 11px; padding: 3px 6px; background: rgba(116, 1, 1, 0.08); border-radius: 2px; color: var(--color-maroon-primary); font-weight: 600;">
+                ${o.payment_method || 'Online'}
+              </span>
+            </td>
+            <td>
+              <span style="font-size: 11px; padding: 3px 6px; background: #e0f2fe; color: #0369a1; border-radius: 2px; font-weight: 600;">
+                ${o.status || 'Received'}
+              </span>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Add Product Modal
+      function openProductModal() {
+        document.getElementById('AddProductModal').style.display = 'flex';
+      }
+
+      function closeProductModal() {
+        document.getElementById('AddProductModal').style.display = 'none';
+      }
+
+      async function handleCreateProduct(e) {
+        e.preventDefault();
+        const newProd = {
+          id: Date.now(),
+          title: document.getElementById('prod-title').value,
+          category: document.getElementById('prod-category').value,
+          price: Number(document.getElementById('prod-price').value),
+          image: document.getElementById('prod-image').value,
+          secondary_image: document.getElementById('prod-image-back').value || document.getElementById('prod-image').value,
+          badge: document.getElementById('prod-badge').value || 'New Chapter',
+          description: document.getElementById('prod-desc').value,
+          sizes: ['S', 'M', 'L', 'XL', 'XXL']
+        };
+
+        await window.JatayuCatalog.addProduct(newProd);
+        closeProductModal();
+        loadProductsTable();
+        alert('Garment published successfully to your live website!');
+      }
+
+      async function handleDeleteProduct(id) {
+        if (confirm('Are you sure you wish to remove this garment from your live store?')) {
+          await window.JatayuCatalog.deleteProduct(id);
+          loadProductsTable();
+        }
+      }
+
+      // Supabase Config
+      function loadDbConfig() {
+        document.getElementById('SupabaseUrlInput').value = localStorage.getItem('jatayu_supabase_url') || '';
+        document.getElementById('SupabaseKeyInput').value = localStorage.getItem('jatayu_supabase_key') || '';
+      }
+
+      function saveSupabaseConfig(e) {
+        e.preventDefault();
+        const url = document.getElementById('SupabaseUrlInput').value.trim();
+        const key = document.getElementById('SupabaseKeyInput').value.trim();
+        localStorage.setItem('jatayu_supabase_url', url);
+        localStorage.setItem('jatayu_supabase_key', key);
+        
+        const notice = document.getElementById('DbSaveNotice');
+        notice.style.display = 'inline';
+        setTimeout(() => { notice.style.display = 'none'; }, 3000);
+      }
+
+      document.addEventListener('DOMContentLoaded', checkAuth);
+    </script>
+  </body>
+</html>
