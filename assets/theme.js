@@ -30,6 +30,8 @@
     initPDPVariants();
     initQuickAddButtons();
     initScrollReveals();
+    initToyonJourneyScroll();
+    initBestSellersCarousel();
   });
 
   /* ==========================================================================
@@ -519,6 +521,150 @@
           await window.JatayuCart.add(variantId, 1, btn);
         }
       });
+    });
+  }
+
+  /* ==========================================================================
+     10. Toyon-Style Pinned Journey Multi-Phase Scroll Engine
+     ========================================================================== */
+  function initToyonJourneyScroll() {
+    const journey = $('#JourneySection');
+    const stage = $('#JourneyStage');
+    if (!journey || !stage) return;
+
+    const stageHeroContent = $('#StageHeroContent');
+    const heroStream = $('#HeroStream');
+    const stageVideoLayer = $('#StageVideoLayer');
+    const journeyProgressBar = $('#JourneyProgressBar');
+    const journeyStageNum = $('#JourneyStageNum');
+    const journeyStageLabel = $('#JourneyStageLabel');
+    const scrollCue = $('#JourneyScrollCue');
+    const journeyHud = $('.journey-hud');
+
+    const stages = [
+      { threshold: 0.0, num: "STAGE 01 / 05", label: "THE AWAKENING", phase: "hero" },
+      { threshold: 0.22, num: "STAGE 02 / 05", label: "SACRED FLIGHT", phase: "road" },
+      { threshold: 0.50, num: "STAGE 03 / 05", label: "SILHOUETTE DRIFT", phase: "stream" },
+      { threshold: 0.78, num: "STAGE 04 / 05", label: "AYODHYA ATELIER", phase: "craft" },
+      { threshold: 0.94, num: "STAGE 05 / 05", label: "SOVEREIGN ASCENT", phase: "arrival" }
+    ];
+
+    let ticking = false;
+
+    const updateJourneyMotion = () => {
+      const rect = journey.getBoundingClientRect();
+      const totalScrollable = journey.offsetHeight - window.innerHeight;
+      if (totalScrollable <= 0) return;
+
+      // Scrolled distance from top of journey
+      const scrolled = -rect.top;
+      const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
+
+      // Update live progress bar
+      if (journeyProgressBar) {
+        journeyProgressBar.style.width = `${(progress * 100).toFixed(1)}%`;
+      }
+
+      // Determine active milestone
+      let activeStage = stages[0];
+      for (let i = stages.length - 1; i >= 0; i--) {
+        if (progress >= stages[i].threshold) {
+          activeStage = stages[i];
+          break;
+        }
+      }
+
+      if (journey.getAttribute('data-phase') !== activeStage.phase) {
+        journey.setAttribute('data-phase', activeStage.phase);
+      }
+      if (journeyStageNum && journeyStageNum.textContent !== activeStage.num) {
+        journeyStageNum.textContent = activeStage.num;
+      }
+      if (journeyStageLabel && journeyStageLabel.textContent !== activeStage.label) {
+        journeyStageLabel.textContent = activeStage.label;
+      }
+
+      // Scroll-Triggered Dynamic Transforms
+      // 1. Hero Content fades and lifts smoothly into perspective
+      if (stageHeroContent) {
+        const contentOpacity = Math.max(0, 1 - (progress * 2.8));
+        const contentTranslateY = -(progress * 160);
+        const contentScale = 1 - (progress * 0.12);
+        stageHeroContent.style.opacity = contentOpacity.toFixed(3);
+        stageHeroContent.style.transform = `translate3d(0, ${contentTranslateY.toFixed(1)}px, 0) scale(${contentScale.toFixed(3)})`;
+        stageHeroContent.style.pointerEvents = progress > 0.35 ? 'none' : 'auto';
+      }
+
+      // 2. Video background reveals and softly expands
+      if (stageVideoLayer) {
+        const videoScale = 1 + (progress * 0.22);
+        const videoOpacity = Math.min(0.42, 0.16 + (progress * 0.32));
+        stageVideoLayer.style.transform = `scale(${videoScale.toFixed(3)})`;
+        stageVideoLayer.style.opacity = videoOpacity.toFixed(3);
+      }
+
+      // 3. Floating Garment Stream expands into 3D perspective wings
+      if (heroStream) {
+        if (progress > 0.12) {
+          const roadProgress = (progress - 0.12) / 0.88;
+          const streamScale = 1 + (roadProgress * 0.55);
+          const streamRotateX = Math.min(40, roadProgress * 36);
+          const streamTranslateY = roadProgress * 70;
+          heroStream.style.transform = `perspective(950px) rotateX(${streamRotateX.toFixed(1)}deg) scale(${streamScale.toFixed(3)}) translateY(${streamTranslateY.toFixed(1)}px)`;
+        } else {
+          heroStream.style.transform = 'perspective(950px) rotateX(0deg) scale(1) translateY(0px)';
+        }
+      }
+
+      // 4. Scroll Cue Indicator
+      if (scrollCue) {
+        scrollCue.style.opacity = Math.max(0, 1 - (progress * 3.8)).toFixed(2);
+      }
+
+      // 5. Journey HUD fadeout when exiting the pinned stage
+      if (journeyHud) {
+        journeyHud.style.opacity = progress >= 0.96 ? '0' : '1';
+        journeyHud.style.pointerEvents = progress >= 0.96 ? 'none' : 'auto';
+      }
+
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateJourneyMotion);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateJourneyMotion);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    // Initial run
+    updateJourneyMotion();
+  }
+
+  /* ==========================================================================
+     11. Best Sellers Horizontal Design Showcase Carousel
+     ========================================================================== */
+  function initBestSellersCarousel() {
+    const track = $('#BestSellersTrack');
+    const prevBtn = $('#CarouselPrev');
+    const nextBtn = $('#CarouselNext');
+    if (!track || !prevBtn || !nextBtn) return;
+
+    const scrollAmount = 350;
+
+    prevBtn.addEventListener('click', () => {
+      track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     });
   }
 
